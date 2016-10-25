@@ -1,0 +1,17 @@
+doctype html
+html()&attributes(metaHeader.htmlAttributes.toComponent())
+    head
+        link(rel="stylesheet",type="text/css",media="screen",charset="utf-8",href=styleSrc)
+        | !{metaHeader.title.toString()}
+        | !{metaHeader.base.toString()}
+        | !{metaHeader.meta.toString()}
+        | !{metaHeader.link.toString()}
+        | !{metaHeader.script.toString()}
+        | !{metaHeader.style.toString()}
+
+    body
+        div#root!= html
+        script(type="text/javascript",charset="utf-8") window.__REDUX_STATE__ = '#{reduxState}'
+
+        each src in scriptSrcs
+            script(src=src)

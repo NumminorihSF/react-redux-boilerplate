@@ -1,0 +1,159 @@
+image: numminorihsf/some-image
+
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+  - doc
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+
+doc:
+  stage: doc
+  script:
+    - npm run doc
+  artifacts:
+      name: documentation
+      paths:
+        - doc/
+
+build_v4:
+  stage: build
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm install --loglevel warn
+    - NODE_ENV=production npm run build
+  only:
+      - release
+  artifacts:
+    paths:
+      - build/
+
+pre_build_v4:
+  stage: build
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm install --loglevel warn
+    - NODE_ENV=production NODE_SUB_ENV=preproduction npm run build
+  only:
+    - release-candidate
+    - master
+  artifacts:
+    paths:
+      - build/
+
+
+test_v4:
+  stage: test
+  dependencies:
+    - build_v4
+  script:
+    - npm run coverage
+  only:
+      - release
+  artifacts:
+    paths:
+      - coverage/
+
+develop_test_v4:
+  stage: test
+  dependencies:
+    - build_v4
+  script:
+    - npm run coverage
+  only:
+      - master
+  artifacts:
+    paths:
+      - coverage/
+
+pre_test_v4:
+  stage: test
+  dependencies:
+    - pre_build_v4
+  script:
+    - npm run coverage
+  only:
+      - release-candidate
+  artifacts:
+    paths:
+      - coverage/
+
+
+develop_build_v4:
+  stage: build
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm install --only=dev --loglevel warn
+    - NODE_ENV=develop npm run build
+  only:
+    - master
+  artifacts:
+    paths:
+      - build/
+
+release_v4:
+  stage: deploy
+  dependencies:
+    - build_v4
+  before_script:
+    - rm -rf node_modules
+    - export NODE_ENV=production
+    - export NODE_SUB_ENV=production
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm prune --production --only=prod --loglevel warn
+    - cp process.json build/process.json
+    - cp package.json build/package.json
+    - mv node_modules build/node_modules
+  only:
+    - release
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - build/
+
+pre_release_v4:
+  stage: deploy
+  dependencies:
+    - pre_build_v4
+  before_script:
+    - rm -rf node_modules
+    - export NODE_ENV=production
+    - export NODE_SUB_ENV=preproduction
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm prune --production --only=prod --loglevel warn
+    - cp process.json build/process.json
+    - cp package.json build/package.json
+    - mv node_modules build/node_modules
+  only:
+    - release-candidate
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - build/
+
+develop_release_v4:
+  stage: deploy
+  dependencies:
+    - develop_build_v4
+  before_script:
+    - rm -rf node_modules
+    - export NODE_ENV=develop
+  script:
+    - mv /tmp/node_prebuilt/node_modules ./node_modules
+    - npm prune --production --only=prod --loglevel warn
+    - cp process.json build/process.json
+    - cp package.json build/package.json
+    - mv node_modules build/node_modules
+  only:
+    - master
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - build/
