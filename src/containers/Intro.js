@@ -16,7 +16,7 @@ class Intro extends Component {
         </div>
         <Link to="/questions">to question</Link>
       </div>
-    )
+    );
   }
 }
 

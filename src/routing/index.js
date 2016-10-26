@@ -21,6 +21,5 @@ export default function(history) {
         <IndexRoute component={Intro} />
       </Route>
     </Router>
-  )
+  );
 }
-

@@ -58,19 +58,18 @@ server.set('view engine', 'pug');
 server.get('/api/questions', (req, res)=> {
   let { questions } = require('./mock_api'); // eslint-disable-line global-require
   res.send(questions);
-  //setTimeout(()=>{res.send(questions)},1000);
 });
 
 server.get('/api/users/:id', (req, res)=> {
   let { getUser } = require('./mock_api'); // eslint-disable-line global-require
-  setTimeout(()=>{res.send(getUser(req.params.id))},1000);
+  res.send(getUser(req.params.id));
 });
 
 server.get('/api/questions/:id', (req, res)=> {
   let { getQuestion } = require('./mock_api'); // eslint-disable-line global-require
   let question = getQuestion(req.params.id);
   if (question) {
-    setTimeout(()=>{res.send(question)},1000);
+    res.send(question);
   } else {
     res.status(404).send({ reason: 'question not found' })
   }

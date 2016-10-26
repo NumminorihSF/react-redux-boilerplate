@@ -23,8 +23,6 @@ if (window.__REDUX_STATE__) {
   }
 }
 
-console.log('redux state is', reduxState);
-
 const store = configureStore(reduxState);
 
 ReactDOM.render((
@@ -32,5 +30,3 @@ ReactDOM.render((
     { createRoutes(browserHistory) }
   </Provider>
 ), document.getElementById('root'));
-
-console.log('HURAY');
