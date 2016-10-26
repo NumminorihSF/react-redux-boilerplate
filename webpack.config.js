@@ -31,9 +31,15 @@ const config = {
     vendor: [
       'react',
       'react-router',
+      'react-helmet',
+      'react-redux',
+      'react-router-redux',
+      'bluebird',
+      'redux-logger',
+      'redux-thunk',
+      'superagent',
       'redux',
-      'react-dom',
-      'history'
+      'react-dom'
     ]
 
   },
@@ -44,6 +50,7 @@ const config = {
     publicPath: '/public',
     chunkFilename: "[name].js"
   },
+
   debug: true,
   plugins: [
     new webpack.DefinePlugin(define),
