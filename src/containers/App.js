@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-if (false === process.env.ON_SERVER) require('./App.scss');
+if (process.env.ON_SERVER === false) {
+  require('./App.scss'); // eslint-disable-line global-require
+}
 
 class App extends Component {
   render() {
@@ -11,7 +13,7 @@ class App extends Component {
           defaultTitle="Redux real-world example"
           titleTemplate="%s - Redux real-world example"
           meta={[
-            {"name": "description", "content": "A boilerplate doing universal/isomorphic rendering with Redux + React-router + Express"},
+            {"name": "description", "content": "A boilerplate doing universal/isomorphic rendering with Redux + React-router + Express"}
           ]}
           htmlAttributes={{"lang": "en"}}
         />

@@ -14,6 +14,6 @@ export default function(state = defaultState, action) {
       return state.merge({ user: action.response });
 
     default:
-      return state
+      return state;
   }
 }

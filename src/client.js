@@ -14,14 +14,16 @@ import Immutable from 'immutable'
 let reduxState = {};
 if (window.__REDUX_STATE__) {
   try {
-    let plain = JSON.parse(unescape(__REDUX_STATE__));
+    let plain = JSON.parse(decodeURIComponent(__REDUX_STATE__));
     Object.keys(plain).forEach((key)=> {
       reduxState[key] = Immutable.fromJS(plain[key]);
     })
   } catch (e) {
+    console.warn('Error in ReduxState parse. Use empty state.', e);
   }
 }
-console.log(reduxState);
+
+console.log('redux state is', reduxState);
 
 const store = configureStore(reduxState);
 
@@ -30,3 +32,5 @@ ReactDOM.render((
     { createRoutes(browserHistory) }
   </Provider>
 ), document.getElementById('root'));
+
+console.log('HURAY');

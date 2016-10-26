@@ -2,13 +2,21 @@ var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
 var port = 3000;
-
+var path = require('path');
 
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   hot: true,
   historyApiFallback: true,
   compress: true,
+  headers: {'Access-Control-Allow-Origin': '*'},
+  inline: true,
+  lazy: false,
+  contentBase: path.join(__dirname, 'src'),
+  staticOptions: {
+    '/assets': {},
+    '/public': {}
+  },
   stats: {
     colors: true,
     hash: true,

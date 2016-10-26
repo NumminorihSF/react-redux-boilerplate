@@ -19,7 +19,7 @@
     "prestart": "npm run build",
     "start": "NODE_ENV=production node build/server",
     "test:watch": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive 'test/**/*.test.js' -w",
-    "test:ci": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive 'test/**/*.test.js'"
+    "test:ci": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive 'test/**/*.test.js'",
     "test": "npm run test:ci"
   },
   "author": "Konstantine Petryaev <numminorihsf@gmail.com>",

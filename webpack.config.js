@@ -70,23 +70,23 @@ const config = {
       }
     ],
     postLoaders: [
-      // {
-      //   test: /\.jsx?$/,
-      //   //exclude: /\/(node_modules|bower_components)\//,
-      //   loader: 'autopolyfiller-loader',
-      //   query: {
-      //     browsers: BROWSERS }
-      // }
+      {
+        test: /\.jsx?$/,
+        //exclude: /\/(node_modules|bower_components)\//,
+        loader: 'autopolyfiller-loader',
+        query: {
+          browsers: BROWSERS }
+      }
     ]
   },
   postcss: () => [autoprefixer]
 };
 
 if (isDebugMode) {
-   config.entry.dev = [
-     'webpack-dev-server/client?http://localhost:3000',
-     'webpack/hot/only-dev-server',
-   ];
+  config.entry.app = config.entry.app.concat([
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/only-dev-server'
+  ]);
 
   config.plugins = config.plugins.concat([
     new webpack.HotModuleReplacementPlugin(),
@@ -98,7 +98,7 @@ if (isDebugMode) {
   ]);
 
   config.output.publicPath = 'http://localhost:3000/';
-  config.module.loaders[0].query = {
+  config.module.loaders[1].query = {
     "env": {
       "development": {
         "presets": ["react-hmre"]
@@ -118,12 +118,17 @@ if (isDebugMode) {
     }),
     new ExtractTextPlugin("app-[hash].css"),
     function() {
+      var getExt = function(name){
+        return name.match(/\..*?$/)[0];
+      };
       this.plugin("done", function(stats) {
         let json = {};
         stats.compilation.chunks.forEach(function(chunk){
-          json[chunk.name] = chunk.files[0];
-          json[chunk.id] = chunk.files[0];
-          chunk.ids.forEach((id)=>{json[id] = chunk.files[0]});
+          chunk.files.forEach((file)=>{
+            json[chunk.name + getExt(file)] = file;
+            json[chunk.id + getExt(file)] = file;
+            chunk.ids.forEach((id)=>{json[id + getExt(file)] = file});
+          });
         });
         fs.writeFile(path.join(__dirname, dest, 'chunk-map.json'), JSON.stringify(json, null, 2));
       });

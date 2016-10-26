@@ -26,19 +26,18 @@ let scriptSrcs;
 
 let styleSrc;
 if ( process.env.NODE_ENV === 'production' ) {
-  let refManifest = require('../chunk-map.json');
+  let refManifest = require('../chunk-map.json'); // eslint-disable-line global-require
   scriptSrcs = [
-    `/public/${refManifest['vendor']}`,
-    `/public/${refManifest['app']}`,
+    `/public/${refManifest['vendor.js']}`,
+    `/public/${refManifest['app.js']}`
   ];
-  styleSrc = `/${refManifest['app.css']}`
+  styleSrc = `/public/${refManifest['app.css']}`
 } else {
   scriptSrcs = [
-    'http://127.0.0.1:3000/public/vendor.js',
-    //'http://localhost:3000/dev.js',
-    'http://127.0.0.1:3000/public/app.js'
+    '/public/vendor.js',
+    '/public/app.js'
   ];
-  styleSrc = '/app.css'
+  styleSrc = '/public/app.css'
 }
 
 server.use(compression());
@@ -57,20 +56,21 @@ server.set('view engine', 'pug');
 
 // mock apis
 server.get('/api/questions', (req, res)=> {
-  let { questions } = require('./mock_api');
-  res.send(questions)
+  let { questions } = require('./mock_api'); // eslint-disable-line global-require
+  res.send(questions);
+  //setTimeout(()=>{res.send(questions)},1000);
 });
 
 server.get('/api/users/:id', (req, res)=> {
-  let { getUser } = require('./mock_api');
-  res.send(getUser(req.params.id))
+  let { getUser } = require('./mock_api'); // eslint-disable-line global-require
+  setTimeout(()=>{res.send(getUser(req.params.id))},1000);
 });
 
 server.get('/api/questions/:id', (req, res)=> {
-  let { getQuestion } = require('./mock_api');
+  let { getQuestion } = require('./mock_api'); // eslint-disable-line global-require
   let question = getQuestion(req.params.id);
   if (question) {
-    res.send(question)
+    setTimeout(()=>{res.send(question)},1000);
   } else {
     res.status(404).send({ reason: 'question not found' })
   }
@@ -87,14 +87,14 @@ server.get('*', (req, res, next)=> {
       res.redirect(301, redirectLocation.pathname + redirectLocation.search)
     } else if (error) {
       res.status(500).send(error.message)
-    } else if (renderProps == null) {
+    } else if (renderProps === null || renderProps === undefined) {
       res.status(404).send('Not found')
     } else {
       let [ getCurrentUrl, unsubscribe ] = subscribeUrl();
       let reqUrl = location.pathname + location.search;
 
-      getReduxPromise().then(()=> {
-        let reduxState = escape(JSON.stringify(store.getState()));
+      getReduxPromise(renderProps, store, history).then(()=> {
+        let reduxState = encodeURIComponent(JSON.stringify(store.getState()));
         let html = ReactDOMServer.renderToString(
           <Provider store={store}>
             { <RouterContext {...renderProps}/> }
@@ -114,15 +114,7 @@ server.get('*', (req, res, next)=> {
         unsubscribe();
         next(err)
       });
-      function getReduxPromise () {
-        let { query, params } = renderProps;
-        let comp = renderProps.components[renderProps.components.length - 1].WrappedComponent
-        let promise = comp.fetchData ?
-          comp.fetchData({ query, params, store, history }) :
-          Promise.resolve();
 
-        return promise
-      }
     }
   });
   function subscribeUrl () {
@@ -138,6 +130,16 @@ server.get('*', (req, res, next)=> {
     ]
   }
 });
+
+function getReduxPromise (renderProps, store, history) {
+  let { query, params } = renderProps;
+  let comp = renderProps.components[renderProps.components.length - 1].WrappedComponent;
+  let promise = comp.fetchData ?
+    comp.fetchData({ query, params, store, history }) :
+    Promise.resolve();
+
+  return promise;
+}
 
 server.use((err, req, res, next)=> {
   console.log(err.stack);

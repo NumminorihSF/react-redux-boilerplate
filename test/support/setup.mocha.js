@@ -4,12 +4,12 @@ import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 import jsdom from 'jsdom'
 
-chai.use(sinonChai)
-chai.use(chaiAsPromised)
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
-global.sinon = sinon
-global.expect = chai.expect
+global.sinon = sinon;
+global.expect = chai.expect;
 
-global.document = jsdom.jsdom('<html><head><script></script></head><body></body></html>')
-global.window = document.defaultView
-global.navigator = global.window.navigator
+global.document = jsdom.jsdom('<html><head><script></script></head><body></body></html>');
+global.window = document.defaultView;
+global.navigator = global.window.navigator;
