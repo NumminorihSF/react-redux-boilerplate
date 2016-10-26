@@ -39,7 +39,8 @@ const config = {
       'redux-thunk',
       'superagent',
       'redux',
-      'react-dom'
+      'react-dom',
+      'humps'
     ]
 
   },
@@ -86,7 +87,10 @@ const config = {
       }
     ]
   },
-  postcss: () => [autoprefixer]
+  postcss: () => [autoprefixer],
+  eslint: {
+    configFile: path.join(__dirname, '.eslint-rc.yml')
+  }
 };
 
 if (isDebugMode) {
@@ -105,6 +109,13 @@ if (isDebugMode) {
   ]);
 
   config.output.publicPath = 'http://localhost:3000/';
+  config.module.preLoaders = [
+    {
+      test: /\.jsx?$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'eslint'
+    }
+  ];
   config.module.loaders[1].query = {
     "env": {
       "development": {
