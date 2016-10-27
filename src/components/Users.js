@@ -21,7 +21,7 @@ class Users extends Component {
       <div>
         Users component
         {content}
-        <Link to={`/users/not-found`}> This link would be redirected to Index</Link>
+        <Link to={`/users/not-found`}> This link would not be redirected to Index</Link>
       </div>
     );
   }
