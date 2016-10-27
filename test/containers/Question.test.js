@@ -5,10 +5,10 @@ import { mount } from 'enzyme'
 import { browserHistory } from 'react-router'
 
 describe('Container::Question', function(){
-  let props
+  let props;
 
   function renderDoc () {
-    return mount(<Question {...props}/>)
+    return mount(<Question {...props}/>);
   }
   beforeEach(function(){
     props = {
@@ -24,15 +24,14 @@ describe('Container::Question', function(){
           name: 'jack'
         }
       })
-    }
-  })
+    };
+  });
 
   it('fetches question details on mounted', function(){
-    let doc = renderDoc()
+    let doc = renderDoc();
     expect(props.loadQuestionDetail).to.have.been.calledWith({
       id: props.params.id,
       history: browserHistory
-    })
-  })
-
-})
+    });
+  });
+});
