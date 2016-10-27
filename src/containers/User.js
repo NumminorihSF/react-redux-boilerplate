@@ -28,7 +28,7 @@ class User extends Component {
 }
 
 function mapStateToProps (state) {
-  return { user: state.questionDetail };
+  return { user: state.userDetail };
 }
 
 User.propTypes = {
