@@ -60,6 +60,11 @@ server.get('/api/questions', (req, res)=> {
   res.send(questions);
 });
 
+server.get('/api/users', (req, res)=> {
+  let { users } = require('./mock_api'); // eslint-disable-line global-require
+  res.send(users);
+});
+
 server.get('/api/users/:id', (req, res)=> {
   let { getUser } = require('./mock_api'); // eslint-disable-line global-require
   res.send(getUser(req.params.id));

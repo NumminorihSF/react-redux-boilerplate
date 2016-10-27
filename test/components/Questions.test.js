@@ -24,4 +24,17 @@ describe('Component::Questions', function(){
 
     expect(questionComps.length).to.equal(props.questions.size + 1);
   });
+
+  it('renders "There is not any questions" if no any questions', function(){
+    props.questions = Immutable.fromJS([]);
+    let doc = renderDoc();
+
+    expect(doc.text()).to.contains("There is not any questions");
+  });
+
+  it('do not renders "There is not any questions" if is any questions', function(){
+    let doc = renderDoc();
+
+    expect(doc.text()).to.not.contains("There is not any questions");
+  });
 });

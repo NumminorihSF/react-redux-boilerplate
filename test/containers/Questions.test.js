@@ -12,7 +12,7 @@ describe('Container::Questions', function(){
       loadQuestions: sinon.stub(),
       questions: Immutable.fromJS([
         { id: 1, content: 'question content 1' },
-        { id: 2, content: 'question content 1' }
+        { id: 2, content: 'question content 2' }
       ])
     };
   });
