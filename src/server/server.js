@@ -11,12 +11,15 @@ import { createMemoryHistory, useQueries } from 'history'
 import compression from 'compression'
 import Promise from 'bluebird'
 
-import configureStore from '../store/configureStore'
-import createRoutes from '../routing/index'
 
 import { Provider } from 'react-redux'
 
 import Helmet from 'react-helmet'
+import morgan from 'morgan'
+
+import configureStore from '../store/configureStore'
+import createRoutes from '../routing/index'
+import getCookieHelpers from './cookie'
 
 let server = new Express();
 let port = process.env.PORT || 3000;
@@ -40,6 +43,7 @@ if ( process.env.NODE_ENV === 'production' ) {
   styleSrc = '/public/app.css'
 }
 
+server.use(morgan('short'));
 server.use(compression());
 
 
@@ -97,7 +101,7 @@ server.get('*', (req, res, next)=> {
       let [ getCurrentUrl, unsubscribe ] = subscribeUrl();
       let reqUrl = location.pathname + location.search;
 
-      getReduxPromise(renderProps, store, history).then(()=> {
+      getReduxPromise(renderProps, store, history, getCookieHelpers(req, res)).then(()=> {
         let reduxState = encodeURIComponent(JSON.stringify(store.getState()));
         let html = ReactDOMServer.renderToString(
           <Provider store={store}>
@@ -135,11 +139,11 @@ server.get('*', (req, res, next)=> {
   }
 });
 
-function getReduxPromise (renderProps, store, history) {
+function getReduxPromise (renderProps, store, history, cookie) {
   let { query, params } = renderProps;
   let comp = renderProps.components[renderProps.components.length - 1].WrappedComponent;
   let promise = comp.fetchData ?
-    comp.fetchData({ query, params, store, history }) :
+    comp.fetchData({ query, params, store, history, cookie }) :
     Promise.resolve();
 
   return promise;
