@@ -19,7 +19,7 @@ import morgan from 'morgan'
 
 import configureStore from '../store/configureStore'
 import createRoutes from '../routing/index'
-import getCookieHelpers from './cookie_helper'
+import getCookieHelpers from './cookie'
 
 let server = new Express();
 let port = process.env.PORT || 3000;
