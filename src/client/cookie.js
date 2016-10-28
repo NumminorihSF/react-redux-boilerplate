@@ -22,9 +22,29 @@ function getCookie(cookieName) {
 function setCookie(cookieName, value, options) {
   options = options || {};
 
+  normalizeExpires(options);
+
+  value = encodeURIComponent(value);
+
+  var updatedCookie = cookieName + "=" + value;
+
+  for (var propName in options) {
+    if (options.hasOwnProperty(propName)) {
+      updatedCookie += "; " + propName;
+      var propValue = options[propName];
+      if (propValue !== true) {
+        updatedCookie += "=" + propValue;
+      }
+    }
+  }
+
+  document.cookie = updatedCookie;
+}
+
+function normalizeExpires(options){
   var expires = options.expires;
 
-  if (typeof expires == "number" && expires) {
+  if (typeof expires === "number" && expires) {
     var d = new Date();
     d.setTime(d.getTime() + expires * 1000);
     expires = options.expires = d;
@@ -32,18 +52,4 @@ function setCookie(cookieName, value, options) {
   if (expires && expires.toUTCString) {
     options.expires = expires.toUTCString();
   }
-
-  value = encodeURIComponent(value);
-
-  var updatedCookie = cookieName + "=" + value;
-
-  for (var propName in options) {
-    updatedCookie += "; " + propName;
-    var propValue = options[propName];
-    if (propValue !== true) {
-      updatedCookie += "=" + propValue;
-    }
-  }
-
-  document.cookie = updatedCookie;
 }
