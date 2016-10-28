@@ -105,7 +105,19 @@ if (isDebugMode) {
       name: 'vendor',
       filename: 'vendor.js'
     }),
-    new ExtractTextPlugin("app.css")
+    new ExtractTextPlugin("app.css"),
+    function() {
+      this.plugin("watch-run", function(w, cb) {
+        return require('child_process').exec('npm run test:ci', function(err, stdout, stderr){
+          if (err) {
+            console.error('Tests are failed');
+            return console.log(stdout);
+          }
+          else console.log('Tests are completed');
+          cb(null);
+        });
+      });
+    }
   ]);
 
   config.output.publicPath = 'http://localhost:3000/';
