@@ -69,7 +69,7 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
     });
     let params = extractParams(apiAction[CALL_API]);
 
-    superAgent[params.method](params.url)
+    setCookieHeader(superAgent[params.method](params.url), params)
       .send(params.body)
       .query(params.query)
       .end((err, res)=> {
@@ -87,6 +87,7 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
           reject(err);
         } else {
           let resBody = camelizeKeys(res.body);
+          setCookie(res, params.setCookie);
           dispatch(actionWith(apiAction, {
             type: params.successType,
             response: resBody
@@ -106,6 +107,7 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
 function extractParams (callApi) {
   let {
     method,
+    cookie,
     path,
     query,
     body,
@@ -116,10 +118,14 @@ function extractParams (callApi) {
   } = callApi;
 
   let url = `${config.API_BASE_URL}${path}`;
+  let cookieHeader = getCookieHeader(cookie);
+  let setCookie = getCookieSetter(url, cookie);
 
   return {
     method,
     url,
+    cookieHeader,
+    setCookie,
     query,
     body,
     successType,
@@ -127,4 +133,33 @@ function extractParams (callApi) {
     afterSuccess,
     afterError
   };
+}
+
+function getCookieHeader(cookie){
+  if (!isObject(cookie)) return '';
+  if (!isFunction(cookie.getHeader)) return '';
+  return cookie.getHeader();
+}
+
+function defaultCookieSetter(url, cookieName){
+  if (process.env.ON_SERVER === false) return;
+  console.warn(`Try set cookie (Set-Cookie: ${cookieName}) without \`cookie\` object in action. Requested url: ${url}`);
+}
+
+function getCookieSetter(url, cookie){
+  if (!isObject(cookie)) return (...params) => defaultCookieSetter(url, ...params);
+  if (!isFunction(cookie.setCookie)) return (...params) => defaultCookieSetter(url, ...params);
+  return cookie.setCookie;
+}
+
+function setCookie({ headers = {} }, setCookie) {
+  if (headers && headers['set-cookie']){
+    setCookie(headers['set-cookie']);
+  }
+}
+
+function setCookieHeader(superagent, { cookieHeader }){
+  if (process.env.ON_SERVER === false) return superagent;
+  if (!cookieHeader) return superagent;
+   return superagent.set('Cookie', cookieHeader);
 }

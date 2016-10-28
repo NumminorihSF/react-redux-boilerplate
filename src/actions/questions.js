@@ -13,7 +13,7 @@ export function loadQuestions() {
 
 export const LOADED_QUESTION_DETAIL = Symbol('LOADED_QUESTION_DETAIL');
 export const LOADED_QUESTION_USER = Symbol('LOADED_QUESTION_USER');
-export function loadQuestionDetail ({ id, history }) {
+export function loadQuestionDetail ({ id, history, cookie }) {
   return {
     [CHAIN_API]: [
       ()=> {
