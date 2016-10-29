@@ -13,7 +13,7 @@ describe('Reducer::UserDetail', function(){
 
         let newState = reducer(undefined, action);
 
-        expect(newState.toJS()).to.deep.equal({ user: {}, key: 'val' });
+        expect(newState.toJS()).to.deep.equal({ key: 'val' });
       });
     });
   });

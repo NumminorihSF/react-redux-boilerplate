@@ -8,7 +8,7 @@ module.exports = function(request, response){
     getHeader: getCookiesHeader,
     get: getCookie,
     set: setCookie,
-    setCookie: sendSetCookieHeader,
+    setCookie: sendSetCookieHeader
   };
 
   function getCookiesHeader(){
