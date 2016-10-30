@@ -33,6 +33,7 @@ const config = {
       'react-router',
       'react-helmet',
       'react-redux',
+      'immutable',
       'react-router-redux',
       'bluebird',
       'redux-logger',
@@ -111,7 +112,7 @@ if (isDebugMode) {
         return require('child_process').exec('npm run test:ci', function(err, stdout, stderr){
           if (err) {
             console.error('Tests are failed');
-            return console.log(stdout);
+            console.log(stdout);
           }
           else console.log('Tests are completed');
           cb(null);

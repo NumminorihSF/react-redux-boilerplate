@@ -87,7 +87,7 @@ server.get('/api/questions/:id', (req, res)=> {
 server.get('*', (req, res, next)=> {
   let history = useRouterHistory(useQueries(createMemoryHistory))();
   let store = configureStore();
-  let routes = createRoutes(history);
+  let routes = createRoutes(history, store);
   let location = history.createLocation(req.url);
 
   match({ routes, location }, (error, redirectLocation, renderProps) => {

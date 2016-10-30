@@ -3,6 +3,7 @@ import thunkMiddleware from 'redux-thunk'
 import apiMiddleware from '../middleware/api'
 import createLogger from 'redux-logger'
 import rootReducer from '../reducers'
+//import { routerMiddleware } from 'react-router-redux'
 
 
 const logger = createLogger({
@@ -16,6 +17,7 @@ const logger = createLogger({
 });
 
 const createStoreWithMiddleware = applyMiddleware(
+//  routerMiddleware,
   thunkMiddleware,
   apiMiddleware,
   logger
