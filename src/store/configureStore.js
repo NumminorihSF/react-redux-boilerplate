@@ -36,3 +36,7 @@ export default function configureStore(initialState) {
 
   return store;
 }
+
+//export function applyMiddleware (store, ...middleware){
+//  return applyMiddle(...middleware)(store);
+//}

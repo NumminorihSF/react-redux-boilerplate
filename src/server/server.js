@@ -10,16 +10,18 @@ import { useRouterHistory, RouterContext, match } from 'react-router'
 import { createMemoryHistory, useQueries } from 'history'
 import compression from 'compression'
 import Promise from 'bluebird'
-
+import { syncHistoryWithStore } from 'react-router-redux'
 
 import { Provider } from 'react-redux'
 
 import Helmet from 'react-helmet'
 import morgan from 'morgan'
 
+import { routerMiddleware } from 'react-router-redux'
 import configureStore from '../store/configureStore'
 import createRoutes from '../routing/index'
 import getCookieHelpers from './cookie'
+
 
 let server = new Express();
 let port = process.env.PORT || 3000;
@@ -66,28 +68,34 @@ server.get('/api/questions', (req, res)=> {
 
 server.get('/api/users', (req, res)=> {
   let { users } = require('./mock_api'); // eslint-disable-line global-require
-  res.send(users);
+  setTimeout(function(){res.send(users);},1000);
 });
 
 server.get('/api/users/:id', (req, res)=> {
   let { getUser } = require('./mock_api'); // eslint-disable-line global-require
-  res.send(getUser(req.params.id));
+  setTimeout(function(){  res.send(getUser(req.params.id));},1000);
 });
 
 server.get('/api/questions/:id', (req, res)=> {
   let { getQuestion } = require('./mock_api'); // eslint-disable-line global-require
   let question = getQuestion(req.params.id);
   if (question) {
-    res.send(question);
+    setTimeout(function(){res.send(question);},1000);
   } else {
     res.status(404).send({ reason: 'question not found' })
   }
 });
 
 server.get('*', (req, res, next)=> {
-  let history = useRouterHistory(useQueries(createMemoryHistory))();
   let store = configureStore();
-  let routes = createRoutes(history, store);
+  const syncOpts = {
+    selectLocationState(state) {
+      return state.routing.toJS();
+    }
+  }
+  let history = syncHistoryWithStore(useRouterHistory(useQueries(createMemoryHistory))(), store, syncOpts);
+//  store = applyMiddleware(store, routerMiddleware(history));
+  let routes = createRoutes(history);
   let location = history.createLocation(req.url);
 
   match({ routes, location }, (error, redirectLocation, renderProps) => {
@@ -102,7 +110,11 @@ server.get('*', (req, res, next)=> {
       let reqUrl = location.pathname + location.search;
 
       getReduxPromise(renderProps, store, history, getCookieHelpers(req, res)).then(()=> {
-        let reduxState = encodeURIComponent(JSON.stringify(store.getState()));
+        let state = store.getState();
+
+        state.routing = state.routing.merge({locationBeforeTransitions: location});
+
+	let reduxState = encodeURIComponent(JSON.stringify(state));
         let html = ReactDOMServer.renderToString(
           <Provider store={store}>
             { <RouterContext {...renderProps}/> }

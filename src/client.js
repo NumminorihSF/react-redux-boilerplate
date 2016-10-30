@@ -9,7 +9,8 @@ import configureStore from './store/configureStore'
 import createRoutes from './routing/index'
 import { Provider } from 'react-redux'
 import Immutable from 'immutable'
-
+import { routerMiddleware } from 'react-router-redux'
+import { syncHistoryWithStore } from 'react-router-redux'
 
 let reduxState = {};
 if (window.__REDUX_STATE__) {
@@ -25,8 +26,16 @@ if (window.__REDUX_STATE__) {
 
 const store = configureStore(reduxState);
 
+
+
+const syncOpts = {
+  selectLocationState(state) {
+    return state.routing.toJS();
+  }
+}
+
 ReactDOM.render((
   <Provider store={store}>
-    { createRoutes(browserHistory, store) }
+    { createRoutes(syncHistoryWithStore(browserHistory, store, syncOpts)) }
   </Provider>
 ), document.getElementById('root'));
