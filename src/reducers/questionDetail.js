@@ -7,6 +7,8 @@ let defaultState = Immutable.fromJS({
 
 export default function(state = defaultState, action) {
   switch(action.type) {
+    case ActionType.LOAD_QUESTION_DETAIL:
+      return state.set({ user: {} });
     case ActionType.LOADED_QUESTION_DETAIL:
       return state.merge(action.response);
 

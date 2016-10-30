@@ -69,6 +69,18 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
     });
     let params = extractParams(apiAction[CALL_API]);
 
+    if ( params.beforeType ) {
+      dispatch(actionWith(apiAction, {
+        type: params.beforeType,
+        params
+      }))
+    }
+
+    if (isFunction(params.beforeStart)) {
+      params.beforeStart({ getState })
+    }
+
+
     setCookieHeader(superAgent[params.method](params.url), params)
       .send(params.body)
       .query(params.query)
@@ -111,6 +123,8 @@ function extractParams (callApi) {
     path,
     query,
     body,
+    startType,
+    beforeStart,
     successType,
     errorType,
     afterSuccess,
@@ -128,6 +142,8 @@ function extractParams (callApi) {
     setCookie,
     query,
     body,
+    startType,
+    beforeStart,
     successType,
     errorType,
     afterSuccess,
