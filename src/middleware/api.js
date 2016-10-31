@@ -71,14 +71,14 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
 
     if ( params.startType ) {
       dispatch(actionWith(apiAction, {
+        type: params.startType,
         url : params.url,
-        query : params.query,
-        type: params.startType
-      }))
+        query : params.query
+      }));
     }
 
     if (isFunction(params.beforeStart)) {
-      params.beforeStart({ getState })
+      params.beforeStart({ getState });
     }
 
 
