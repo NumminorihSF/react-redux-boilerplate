@@ -22,7 +22,7 @@ export function loadQuestionDetail ({ id, history, cookie }) {
           [CALL_API]: {
             method: 'get',
             path: `/api/questions/${id}`,
-            beforeStart: LOAD_QUESTION_DETAIL,
+            startType: LOAD_QUESTION_DETAIL,
             successType: LOADED_QUESTION_DETAIL,
             afterError: ()=> {
               history.push('/')

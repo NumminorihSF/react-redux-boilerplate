@@ -69,10 +69,11 @@ function createRequestPromise (apiActionCreator, next, getState, dispatch) {
     });
     let params = extractParams(apiAction[CALL_API]);
 
-    if ( params.beforeType ) {
+    if ( params.startType ) {
       dispatch(actionWith(apiAction, {
-        type: params.beforeType,
-        params
+        url : params.url,
+        query : params.query,
+        type: params.startType
       }))
     }
 
