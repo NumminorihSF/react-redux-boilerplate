@@ -6,11 +6,10 @@
   "scripts": {
     "lint": "eslint -c ./.eslint-rc.yml \"src/**/*.js\"",
     "lint:fix": "eslint --fix -c ./.eslint-rc.yml \"src/**/*.js\"",
-    "prebuild": "npm install --loglevel=warn",
     "build": "NODE_ENV=production npm run build:prod",
     "prebuild:prod": "npm run build:prod:client",
     "build:prod": "npm run build:prod:server",
-    "build:prod:client": "webpack -p",
+    "build:prod:client": "webpack",
     "build:prod:server": "gulp",
     "prebuild:dev": "npm run build:dev:client",
     "build:dev": "npm run build:dev:server",

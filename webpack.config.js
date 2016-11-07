@@ -56,7 +56,6 @@ const config = {
   debug: true,
   plugins: [
     new webpack.DefinePlugin(define),
-    new webpack.optimize.OccurrenceOrderPlugin(false),
     new webpack.optimize.DedupePlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({template: './src/index.html'})
@@ -144,8 +143,11 @@ if (isDebugMode) {
       name: 'vendor',
       filename: '[name]-[hash].js'
     }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      warnings: true
+      compress: {
+        warnings: false
+      }
     }),
     new ExtractTextPlugin("app-[hash].css"),
     function() {
