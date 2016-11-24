@@ -1,10 +1,16 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
-var port = 3000;
+var port = process.env.PORT || 3000;
 var path = require('path');
 
 new WebpackDevServer(webpack(config), {
+  proxy: {
+    '/api': {
+      target: process.env.API_BASE_URL,
+      secure: false
+    }
+  },
   publicPath: config.output.publicPath,
   hot: true,
   historyApiFallback: true,

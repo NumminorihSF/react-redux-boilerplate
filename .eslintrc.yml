@@ -3,6 +3,7 @@ parserOptions:
   ecmaFeatures:
     modules: true
     jsx: true
+    experimentalObjectRestSpread: true
 
 env:
   amd: true

@@ -1,11 +1,12 @@
 {
-  "name": "my_app_boilerplate",
+  "name": "harveycrm-react",
   "version": "0.9.0",
-  "description": "boilerplate for react-redux app",
+  "description": "",
+  "repository": "ssh://gitblit.saritasa.com/harveycrm/react.git",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint -c ./.eslint-rc.yml \"src/**/*.js\"",
-    "lint:fix": "eslint --fix -c ./.eslint-rc.yml \"src/**/*.js\"",
+    "lint": "eslint -c ./.eslintrc.yml \"src/**/*.js\"",
+    "lint:fix": "eslint --fix -c ./.eslintrc.yml \"src/**/*.js\"",
     "build": "NODE_ENV=production npm run build:prod",
     "prebuild:prod": "npm run build:prod:client",
     "build:prod": "npm run build:prod:server",
@@ -15,21 +16,19 @@
     "build:dev": "npm run build:dev:server",
     "build:dev:client": "webpack",
     "build:dev:server": "gulp",
-    "dev:server": "node webpack.server.js",
-    "prestart": "npm run build",
-    "start": "NODE_ENV=production node build/server",
-    "test:watch": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive 'test/**/*.test.js' -w",
+    "dev:server": "cross-env NODE_ENV=dev cross-env NODE_PATH=./src node webpack.server.js",
+    "start": "NODE_ENV=production NODE_PATH=./build node build/server",
+    "test:watch": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive test/**/*.test.js -w",
     "test:ci": "cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test/support/setup.mocha.js --recursive 'test/**/*.test.js'",
     "test": "npm run test:ci"
   },
   "author": "Konstantine Petryaev <numminorihsf@gmail.com>",
   "license": "MIT",
   "browsers": [
-    "last 2 version",
-    "ie >= 8",
-    "Android >= 2",
-    "iOS >= 7",
-    "Safari >= 5"
+    "ie >= 11",
+    "ff >= 20",
+    "Chrome >= 24",
+    "Safari >= 6"
   ],
   "buildDestination": "build",
   "dependencies": {
@@ -56,6 +55,7 @@
     "autoprefixer": "^6.5.1",
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-react-hmre": "^1.1.1",

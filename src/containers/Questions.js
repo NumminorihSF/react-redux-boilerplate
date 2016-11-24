@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { loadQuestions } from '../actions/questions'
-import Link from 'react-router/lib/Link'
 import Questions from '../components/Questions'
 import Helmet from 'react-helmet'
 
@@ -19,9 +18,7 @@ class QuestionContainer extends Component {
         <Helmet
           title="Questions"
         />
-        <h2>Question</h2>
         <Questions questions={this.props.questions} />
-        <Link to="/">Back to Home</Link>
       </div>
     )
   }

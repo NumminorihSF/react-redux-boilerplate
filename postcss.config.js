@@ -1,6 +1,4 @@
-/**
- * Created by numminorihsf on 25.10.16.
- */
+"use strict";
 const browsers = require('./package.json').browsers;
 
 module.exports = function (ctx) {

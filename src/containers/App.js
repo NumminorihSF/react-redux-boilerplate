@@ -5,8 +5,7 @@ if (process.env.ON_SERVER === false) {
   require('./App.scss'); // eslint-disable-line global-require
 }
 
-class App extends Component {
-  render() {
+const App = (props)=>{
     return (
       <div>
         <Helmet
@@ -19,9 +18,8 @@ class App extends Component {
         />
         {this.props.children}
       </div>
-    )
-  }
-}
+    );
+};
 
 function mapStateToProps() {
   return {}
