@@ -20,6 +20,18 @@ const define = {
 };
 const isDebugMode = !(process.env.NODE_ENV === 'production');
 
+const getStyleLoaders = ()=> {
+    if (process.env.NODE_ENV === 'dev-server') {
+        return 'style!css!postcss!csso!sass';
+    }
+    return ExtractTextPlugin.extract([
+        'css-loader?importLoaders=3',
+        'postcss-loader?importLoaders=2',
+        'csso-loader?importLoaders=1',
+        'sass-loader'
+    ]);
+};
+
 const config = {
   devtool: 'source-map',
   entry: {
@@ -62,12 +74,7 @@ const config = {
     loaders: [
       {
         test: /\.s?css$/,
-        loader: ExtractTextPlugin.extract([
-          'css-loader?importLoaders=3',
-          'postcss-loader?importLoaders=2',
-          'csso-loader?importLoaders=1',
-          'sass-loader'
-        ])
+        loader: getStyleLoaders()
       },
       {
         test: /\.jsx?$/,
