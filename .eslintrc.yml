@@ -1,5 +1,9 @@
+plugins:
+  - react
+
 parserOptions:
   sourceType: module
+
   ecmaFeatures:
     modules: true
     jsx: true
@@ -213,3 +217,6 @@ rules:
   prefer-spread: 0
   prefer-template: 0
   require-yield: 0
+
+  #react plugin options
+  react/no-danger: "error"
