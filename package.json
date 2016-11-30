@@ -26,7 +26,6 @@
   "author": "Konstantine Petryaev <numminorihsf@gmail.com>",
   "license": "MIT",
   "browsers": [
-    "ie >= 11",
     "ff >= 20",
     "Chrome >= 24",
     "Safari >= 6"
@@ -68,6 +67,7 @@
     "enzyme": "^2.5.1",
     "eslint": "^3.8.1",
     "eslint-loader": "^1.6.0",
+    "eslint-plugin-react": "^6.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "gulp": "^3.9.1",
