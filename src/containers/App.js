@@ -16,7 +16,7 @@ const App = (props)=>{
           ]}
           htmlAttributes={{"lang": "en"}}
         />
-        {this.props.children}
+        {props.children}
       </div>
     );
 };

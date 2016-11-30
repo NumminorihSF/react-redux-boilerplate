@@ -19,7 +19,7 @@ const define = {
   'process.env.ON_SERVER': 'false'
 };
 const isDebugMode = !(process.env.NODE_ENV === 'production');
-
+const isDevServerMode = process.env.NODE_ENV === 'dev-server';
 const getStyleLoaders = ()=> {
     if (process.env.NODE_ENV === 'dev-server') {
         return 'style!css!postcss!csso!sass';
@@ -30,6 +30,23 @@ const getStyleLoaders = ()=> {
         'csso-loader?importLoaders=1',
         'sass-loader'
     ]);
+};
+
+const ChunkCreator = function() {
+    var getExt = function(name){
+        return name.match(/\..*?$/)[0];
+    };
+    this.plugin("done", function(stats) {
+        let json = {};
+        stats.compilation.chunks.forEach(function(chunk){
+            chunk.files.forEach((file)=>{
+                json[chunk.name + getExt(file)] = file;
+                json[chunk.id + getExt(file)] = file;
+                chunk.ids.forEach((id)=>{json[id + getExt(file)] = file});
+            });
+        });
+        fs.writeFile(path.join(__dirname, dest, 'chunk-map.json'), JSON.stringify(json, null, 2));
+    });
 };
 
 const config = {
@@ -104,10 +121,10 @@ const config = {
   }
 };
 
-if (isDebugMode) {
+if (isDevServerMode){
   config.entry.app = config.entry.app.concat([
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server'
+      'webpack-dev-server/client',
+      'webpack/hot/only-dev-server'
   ]);
 
   config.plugins = config.plugins.concat([
@@ -134,6 +151,46 @@ if (isDebugMode) {
   config.output.publicPath = 'http://localhost:3000/';
   config.module.preLoaders = [
     {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'eslint'
+    }
+  ];
+  config.module.loaders[1].query = {
+    "env": {
+      "dev-server": {
+        "presets": ["react-hmre"]
+      }
+    }
+  }
+}
+else if (isDebugMode) {
+
+  config.plugins = config.plugins.concat([
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.js'
+    }),
+    new ExtractTextPlugin("app.css"),
+    function() {
+      this.plugin("watch-run", function(w, cb) {
+        return require('child_process').exec('npm run test:ci', function(err, stdout, stderr){
+          if (err) {
+            console.error('Tests are failed');
+            console.log(stdout);
+          }
+          else console.log('Tests are completed');
+          cb(null);
+        });
+      });
+    },
+    ChunkCreator
+  ]);
+
+  config.output.publicPath = 'http://localhost:3000/';
+  config.module.preLoaders = [
+    {
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,
       loader: 'eslint'
@@ -146,7 +203,8 @@ if (isDebugMode) {
       }
     }
   }
-} else {
+}
+else {
   config.output.filename = 'app-[hash].js';
 
   config.plugins = config.plugins.concat([
@@ -161,22 +219,7 @@ if (isDebugMode) {
       }
     }),
     new ExtractTextPlugin("app-[hash].css"),
-    function() {
-      var getExt = function(name){
-        return name.match(/\..*?$/)[0];
-      };
-      this.plugin("done", function(stats) {
-        let json = {};
-        stats.compilation.chunks.forEach(function(chunk){
-          chunk.files.forEach((file)=>{
-            json[chunk.name + getExt(file)] = file;
-            json[chunk.id + getExt(file)] = file;
-            chunk.ids.forEach((id)=>{json[id + getExt(file)] = file});
-          });
-        });
-        fs.writeFile(path.join(__dirname, dest, 'chunk-map.json'), JSON.stringify(json, null, 2));
-      });
-    }
+    ChunkCreator
   ])
 }
 module.exports = config;
