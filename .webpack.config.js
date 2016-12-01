@@ -8,10 +8,12 @@ const fs = require('fs');
 require('assets-webpack-plugin');
 
 const { browsers: BROWSERS = [], buildDestination: dest} = require('./package.json');
+const isDevServerMode = process.env.NODE_ENV === 'dev-server';
 
+const API_BASE_URL = isDevServerMode ? `http://localhost:${process.env.PORT || 3000}` : process.env.API_BASE_URL || null
 const define = {
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  'process.env.API_BASE_URL': JSON.stringify(process.env.API_BASE_URL || null),
+  'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
   'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   'ON_SERVER': 'false',
   'GLOBAL': 'window',
@@ -19,7 +21,7 @@ const define = {
   'process.env.ON_SERVER': 'false'
 };
 const isDebugMode = !(process.env.NODE_ENV === 'production');
-const isDevServerMode = process.env.NODE_ENV === 'dev-server';
+
 const getStyleLoaders = ()=> {
     if (process.env.NODE_ENV === 'dev-server') {
         return 'style!css!postcss!csso!sass';

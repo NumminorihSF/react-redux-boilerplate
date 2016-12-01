@@ -4,6 +4,8 @@ import { loadQuestions } from '../actions/questions'
 import Questions from '../components/Questions'
 import Helmet from 'react-helmet'
 
+const questions = [123, 234]
+
 class QuestionContainer extends Component {
   static fetchData({ store }) {
     return store.dispatch(loadQuestions())
@@ -18,7 +20,8 @@ class QuestionContainer extends Component {
         <Helmet
           title="Questions"
         />
-        <Questions questions={this.props.questions} />
+        <Questions questions={questions} />
+        {props.children}
       </div>
     )
   }
