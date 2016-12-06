@@ -20,11 +20,6 @@ import Intro from '../containers/Intro';
 export default function(history) {
   return (
     <Router history={history}>
-      <Route path="main">
-        <Router path="tab1" component={Tab1}/>
-        <Router path="tab2" component={Tab2}/>
-        <IndexRoute component={Com}/>
-      </Route>
       <Route path="/" component={App}>
         <Route path="questions" component={Questions} />
         <Route path="questions/:id" component={Question} />
@@ -36,8 +31,6 @@ export default function(history) {
 
         <IndexRoute component={Intro} />
       </Route>
-
-      <Route path="*" component={NotFound}/>
     </Router>
   );
 }
