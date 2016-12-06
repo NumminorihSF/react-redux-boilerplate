@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Link from 'react-router/lib/Link'
 import { List } from 'immutable'
 
-const Questions = (props)=>{
+const Questions = (props, context)=>{
   let content = <div>There is not any questions</div>;
 
   if (props.questions && props.questions.size) {
@@ -25,9 +25,10 @@ const Questions = (props)=>{
 
         <Link to={`/questions/not-found`}> This link would be redirected to Index</Link>
         <Link to="/">Back to Home</Link>
+        <div dangerouslySetInnerHTML={'<div></div>'}/>
       </div>
   );
-}
+};
 
 Questions.propTypes = {
   questions: PropTypes.instanceOf(List).isRequired

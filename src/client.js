@@ -12,6 +12,8 @@ import Immutable from 'immutable'
 import { routerMiddleware } from 'react-router-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 
+//import './styles/style.scss'
+
 let reduxState = {};
 if (window.__REDUX_STATE__) {
   try {
