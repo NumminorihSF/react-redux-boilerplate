@@ -25,7 +25,6 @@ const Questions = (props, context)=>{
 
         <Link to={`/questions/not-found`}> This link would be redirected to Index</Link>
         <Link to="/">Back to Home</Link>
-        <div dangerouslySetInnerHTML={'<div></div>'}/>
       </div>
   );
 };
