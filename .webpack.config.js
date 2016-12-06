@@ -156,13 +156,6 @@ if (isDevServerMode){
         loader: 'eslint'
     }
   ];
-  config.module.loaders[1].query = {
-    "env": {
-      "dev-server": {
-        "presets": ["react-hmre"]
-      }
-    }
-  }
 }
 else if (isDebugMode) {
 
