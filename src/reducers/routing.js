@@ -1,15 +1,17 @@
-import Immutable from 'immutable'
-import { LOCATION_CHANGE } from 'react-router-redux'
+/** @flow */
+import { Map } from 'immutable';
 
-const defaultState = Immutable.fromJS({
-  locationBeforeTransitions: null
+import { LOCATION_CHANGE } from 'react-router-redux';
+
+const defaultState = Map({
+  locationBeforeTransitions: null,
 });
 
-export default (state = defaultState, action) => {
+export default (state: Map<string, *> = defaultState, action: Object): Map<string, *> => {
   switch (action.type) {
     case LOCATION_CHANGE:
       return state.merge({
-        locationBeforeTransitions: action.payload
+        locationBeforeTransitions: action.payload,
       });
 
     default:

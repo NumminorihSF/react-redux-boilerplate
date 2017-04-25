@@ -1,15 +1,58 @@
 {
   "presets": [
     "react",
-    "es2015"
+    "es2015",
+    "es2016",
+    "es2017",
+    "flow"
   ],
-  "plugins": ["transform-object-rest-spread"],
+  "plugins": [
+    "transform-object-rest-spread",
+    "add-react-displayname"
+  ],
   "env": {
+    "test": {
+      "presets": [
+        "react",
+        [ "es2015", { "modules": false }],
+        "es2016",
+        "es2017",
+        "flow"
+      ]
+    },
+    "production": {
+      "presets": [
+        "react",
+        [ "es2015", { "modules": false }],
+        "es2016",
+        "es2017",
+        "flow"
+      ]
+    },
     "dev-server": {
       "presets": [
         "react",
-        "es2015",
-        "react-hmre"
+        [ "es2015", { "modules": false }],
+        "es2016",
+        "es2017",
+        "react-hmre",
+        "flow"
+      ]
+    },
+    "tcomb": {
+      "presets": [
+        "react",
+        [ "es2015", { "modules": false }],
+        "es2016",
+        "es2017",
+        "react-hmre",
+        "flow"
+      ],
+      "plugins": [
+        "syntax-flow",
+        "tcomb",
+        "transform-object-rest-spread",
+        "add-react-displayname"
       ]
     }
   }
