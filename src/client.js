@@ -39,7 +39,7 @@ render(createRoutes(syncHistoryWithStore(browserHistory, store, syncOpts)));
 if (typeof module.hot === 'object' && module.hot !== null) {
   if (typeof module.hot.accept === 'function') {
     module.hot.accept([
-      './App/getRoutes',
+      './app/getRoutes',
       './routing',
     ], () => {
       setImmediate(() => {

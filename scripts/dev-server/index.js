@@ -4,7 +4,7 @@ const net = require('net');
 
 const config = require('../../src/config').default || require('../../src/config');
 
-const API_BASE_URL = config.API_BASE_URL;
+const API_BASE_URL = config.constants.API.BASE_URL;
 const BASE_PORT = process.env.PORT || 3000;
 
 const getPort = (function(){
