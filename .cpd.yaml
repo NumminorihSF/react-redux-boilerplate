@@ -1,0 +1,33 @@
+languages:
+  - javascript
+  - coffeescript
+  - typescript
+  - php
+  - python
+  - jsx
+  - haxe
+  - yaml
+  - ruby
+  - go
+  - swift
+  - twig
+  - java
+  - clike    # c++, c, objective-c source
+  - csharp      # c# source
+  - htmlmixed   # html mixed source like knockout.js templates
+files:
+  - "src/**/*.js"
+  - "src/**/*.jsx"
+  - "src/**/*.css"
+exclude:
+  - "**/*.test.js"
+  - "**/node_modules/**"
+  - "**/*.spec.js"
+  - "**/*.min.*"
+reporter: json
+
+limit: 10
+blame: true
+min-tokens: 30
+skip-comments: true
+

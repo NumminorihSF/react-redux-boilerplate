@@ -11,16 +11,17 @@ const generateRoutesMap = (routes) => {
   const result = [];
   const mapRoutes = (routes, prefix = []) => {
     routes.forEach((route) => {
+      const url = [...prefix, route.path].join('/').replace(/\/\//g, '/');
       if (route.indexRoute) {
         result.push({
-          name: [...prefix, route.path].join('/').replace(/\/\//g, '/'),
-          url: [...prefix, route.path].join('/').replace(/\/\//g, '/'),
+          name: url,
+          url,
         });
       }
       if (route.component) {
         result.push({
-          name: `${[...prefix, route.path].join('/')}_Comp`.replace(/\/\//g, '/'),
-          url: [...prefix, route.path].join('/').replace(/\/\//g, '/'),
+          name: `${url}_Comp`,
+          url,
         });
       }
       if (route.childRoutes) {

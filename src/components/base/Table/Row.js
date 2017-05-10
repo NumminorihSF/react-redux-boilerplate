@@ -3,6 +3,7 @@ import React, { PureComponent, PropTypes } from 'react';
 import { Map } from 'immutable';
 
 import Cell from './Cell';
+import metaPropTypes from './metaPropTypes';
 
 class Row extends PureComponent {
   getCells() {
@@ -31,12 +32,7 @@ class Row extends PureComponent {
 
 Row.propTypes = {
   index: PropTypes.number.isRequired,
-  columnsMeta: PropTypes.arrayOf(PropTypes.shape({
-    field: PropTypes.string.isRequired,
-    defaultValue: PropTypes.any,
-    renderCell: PropTypes.func.isRequired,
-    renderTooltip: PropTypes.func.isRequired,
-  })).isRequired,
+  columnsMeta: metaPropTypes,
   data: PropTypes.instanceOf(Map).isRequired,
 };
 

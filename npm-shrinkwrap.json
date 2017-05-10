@@ -947,6 +947,20 @@
         }
       }
     },
+    "blamer": {
+      "version": "0.1.13",
+      "from": "blamer@>=0.1.9 <0.2.0",
+      "resolved": "https://registry.npmjs.org/blamer/-/blamer-0.1.13.tgz",
+      "dev": true,
+      "dependencies": {
+        "bluebird": {
+          "version": "2.3.11",
+          "from": "bluebird@>=2.3.0 <2.4.0",
+          "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-2.3.11.tgz",
+          "dev": true
+        }
+      }
+    },
     "block-stream": {
       "version": "0.0.9",
       "from": "block-stream@*",
@@ -1349,6 +1363,20 @@
       "resolved": "https://registry.npmjs.org/cli-cursor/-/cli-cursor-1.0.2.tgz",
       "dev": true
     },
+    "cli-table": {
+      "version": "0.3.1",
+      "from": "cli-table@>=0.3.1 <0.4.0",
+      "resolved": "https://registry.npmjs.org/cli-table/-/cli-table-0.3.1.tgz",
+      "dev": true,
+      "dependencies": {
+        "colors": {
+          "version": "1.0.3",
+          "from": "colors@1.0.3",
+          "resolved": "https://registry.npmjs.org/colors/-/colors-1.0.3.tgz",
+          "dev": true
+        }
+      }
+    },
     "cli-width": {
       "version": "2.1.0",
       "from": "cli-width@>=2.0.0 <3.0.0",
@@ -1395,6 +1423,12 @@
       "version": "1.1.0",
       "from": "code-point-at@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/code-point-at/-/code-point-at-1.1.0.tgz",
+      "dev": true
+    },
+    "codemirror": {
+      "version": "5.25.2",
+      "from": "codemirror@>=4.10.0",
+      "resolved": "https://registry.npmjs.org/codemirror/-/codemirror-5.25.2.tgz",
       "dev": true
     },
     "color": {
@@ -1816,6 +1850,12 @@
       "version": "0.4.1",
       "from": "currently-unhandled@>=0.4.1 <0.5.0",
       "resolved": "https://registry.npmjs.org/currently-unhandled/-/currently-unhandled-0.4.1.tgz",
+      "dev": true
+    },
+    "cycle": {
+      "version": "1.0.3",
+      "from": "cycle@>=1.0.0 <1.1.0",
+      "resolved": "https://registry.npmjs.org/cycle/-/cycle-1.0.3.tgz",
       "dev": true
     },
     "d": {
@@ -2666,6 +2706,12 @@
       "version": "1.0.2",
       "from": "extsprintf@1.0.2",
       "resolved": "https://registry.npmjs.org/extsprintf/-/extsprintf-1.0.2.tgz",
+      "dev": true
+    },
+    "eyes": {
+      "version": "0.1.8",
+      "from": "eyes@>=0.1.0 <0.2.0",
+      "resolved": "https://registry.npmjs.org/eyes/-/eyes-0.1.8.tgz",
       "dev": true
     },
     "faker": {
@@ -4432,6 +4478,20 @@
       "resolved": "https://registry.npmjs.org/jsbn/-/jsbn-0.1.1.tgz",
       "dev": true,
       "optional": true
+    },
+    "jscpd": {
+      "version": "0.6.11",
+      "from": "jscpd@latest",
+      "resolved": "https://registry.npmjs.org/jscpd/-/jscpd-0.6.11.tgz",
+      "dev": true,
+      "dependencies": {
+        "cli": {
+          "version": "1.0.1",
+          "from": "cli@>=0.10.0",
+          "resolved": "https://registry.npmjs.org/cli/-/cli-1.0.1.tgz",
+          "dev": true
+        }
+      }
     },
     "jsdom": {
       "version": "9.12.0",
@@ -8534,7 +8594,7 @@
     },
     "rimraf": {
       "version": "2.6.1",
-      "from": "rimraf@>=2.2.8 <3.0.0",
+      "from": "https://registry.npmjs.org/rimraf/-/rimraf-2.6.1.tgz",
       "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.6.1.tgz",
       "dev": true
     },
@@ -9073,6 +9133,12 @@
           "resolved": "https://registry.npmjs.org/stackframe/-/stackframe-1.0.2.tgz"
         }
       }
+    },
+    "stack-trace": {
+      "version": "0.0.9",
+      "from": "stack-trace@>=0.0.0 <0.1.0",
+      "resolved": "https://registry.npmjs.org/stack-trace/-/stack-trace-0.0.9.tgz",
+      "dev": true
     },
     "stackframe": {
       "version": "0.3.1",
@@ -10291,6 +10357,26 @@
       "from": "window-size@>=0.1.4 <0.2.0",
       "resolved": "https://registry.npmjs.org/window-size/-/window-size-0.1.4.tgz",
       "dev": true
+    },
+    "winston": {
+      "version": "2.3.1",
+      "from": "winston@>=1.0.0",
+      "resolved": "https://registry.npmjs.org/winston/-/winston-2.3.1.tgz",
+      "dev": true,
+      "dependencies": {
+        "async": {
+          "version": "1.0.0",
+          "from": "async@>=1.0.0 <1.1.0",
+          "resolved": "https://registry.npmjs.org/async/-/async-1.0.0.tgz",
+          "dev": true
+        },
+        "colors": {
+          "version": "1.0.3",
+          "from": "colors@1.0.x",
+          "resolved": "https://registry.npmjs.org/colors/-/colors-1.0.3.tgz",
+          "dev": true
+        }
+      }
     },
     "wordwrap": {
       "version": "1.0.0",

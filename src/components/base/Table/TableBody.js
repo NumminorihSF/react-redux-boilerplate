@@ -3,6 +3,7 @@ import React, { PureComponent, PropTypes } from 'react';
 import { List } from 'immutable';
 
 import Row from './Row';
+import metaPropTypes from './metaPropTypes';
 
 export default class TableBody extends PureComponent {
   getRows() {
@@ -28,10 +29,5 @@ export default class TableBody extends PureComponent {
 TableBody.propTypes = {
   keyField: PropTypes.string.isRequired,
   data: PropTypes.instanceOf(List).isRequired,
-  meta: PropTypes.arrayOf(PropTypes.shape({
-    field: PropTypes.string.isRequired,
-    defaultValue: PropTypes.any,
-    renderCell: PropTypes.func.isRequired,
-    renderTooltip: PropTypes.func.isRequired,
-  })).isRequired,
+  meta: metaPropTypes,
 };
