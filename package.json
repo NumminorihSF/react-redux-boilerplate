@@ -63,7 +63,9 @@
     "test:watch": "npm run _test -- -w",
     "test": "npm run _test",
     "test:ci": "npm run _test",
-    "_test": "cross-env API_BASE_URL=NO_BASE_URL cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test-support/setup.mocha.js --recursive \"src/**/*.test.js\""
+    "_test": "cross-env API_BASE_URL=NO_BASE_URL cross-env NODE_ENV=test cross-env NODE_PATH=./src mocha --compilers js:babel-register -r test-support/setup.mocha.js --recursive \"src/**/*.test.js\"",
+    "help:me": "node ./scripts/help-me",
+    "_help:me:dev:server": "cross-env NODE_SKIP_LINT=1 cross-env NODE_SKIP_TESTS=1 cross-env TARGET=client cross-env NODE_ENV=dev-server cross-env NODE_PATH=./src node scripts/help-me/webpack-server-executable.js"
   },
   "author": "Konstantine Petryaev <numminorihsf@gmail.com>",
   "license": "MIT",
@@ -151,6 +153,7 @@
     "json-schema-faker": "^0.4.0",
     "json-schema-to-flow-type": "^0.2.4",
     "json-server": "^0.9.6",
+    "localtunnel": "^1.8.2",
     "mocha": "^3.1.2",
     "nock": "^9.0.0",
     "node-sass": "^4.5.0",

@@ -5089,6 +5089,74 @@
       "resolved": "https://registry.npmjs.org/loader-utils/-/loader-utils-0.2.17.tgz",
       "dev": true
     },
+    "localtunnel": {
+      "version": "1.8.2",
+      "from": "localtunnel@latest",
+      "resolved": "https://registry.npmjs.org/localtunnel/-/localtunnel-1.8.2.tgz",
+      "dev": true,
+      "dependencies": {
+        "caseless": {
+          "version": "0.11.0",
+          "from": "caseless@>=0.11.0 <0.12.0",
+          "resolved": "https://registry.npmjs.org/caseless/-/caseless-0.11.0.tgz",
+          "dev": true
+        },
+        "commander": {
+          "version": "2.9.0",
+          "from": "commander@>=2.9.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/commander/-/commander-2.9.0.tgz",
+          "dev": true
+        },
+        "debug": {
+          "version": "2.2.0",
+          "from": "debug@2.2.0",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz",
+          "dev": true
+        },
+        "form-data": {
+          "version": "2.1.4",
+          "from": "form-data@>=2.1.1 <2.2.0",
+          "resolved": "https://registry.npmjs.org/form-data/-/form-data-2.1.4.tgz",
+          "dev": true
+        },
+        "har-validator": {
+          "version": "2.0.6",
+          "from": "har-validator@>=2.0.6 <2.1.0",
+          "resolved": "https://registry.npmjs.org/har-validator/-/har-validator-2.0.6.tgz",
+          "dev": true
+        },
+        "ms": {
+          "version": "0.7.1",
+          "from": "ms@0.7.1",
+          "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz",
+          "dev": true
+        },
+        "qs": {
+          "version": "6.3.2",
+          "from": "qs@>=6.3.0 <6.4.0",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-6.3.2.tgz",
+          "dev": true
+        },
+        "request": {
+          "version": "2.78.0",
+          "from": "request@2.78.0",
+          "resolved": "https://registry.npmjs.org/request/-/request-2.78.0.tgz",
+          "dev": true
+        },
+        "tunnel-agent": {
+          "version": "0.4.3",
+          "from": "tunnel-agent@>=0.4.1 <0.5.0",
+          "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.4.3.tgz",
+          "dev": true
+        },
+        "yargs": {
+          "version": "3.29.0",
+          "from": "yargs@3.29.0",
+          "resolved": "https://registry.npmjs.org/yargs/-/yargs-3.29.0.tgz",
+          "dev": true
+        }
+      }
+    },
     "lodash": {
       "version": "4.17.4",
       "from": "lodash@>=4.2.0 <5.0.0",
@@ -5989,6 +6057,12 @@
       "version": "1.0.0",
       "from": "node-status-codes@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/node-status-codes/-/node-status-codes-1.0.0.tgz",
+      "dev": true
+    },
+    "node-uuid": {
+      "version": "1.4.8",
+      "from": "node-uuid@>=1.4.7 <1.5.0",
+      "resolved": "https://registry.npmjs.org/node-uuid/-/node-uuid-1.4.8.tgz",
       "dev": true
     },
     "nopt": {
@@ -7489,6 +7563,12 @@
       "version": "0.6.17-noexc",
       "from": "opbeat-zone@>=0.6.17-noexc <0.7.0",
       "resolved": "https://registry.npmjs.org/opbeat-zone/-/opbeat-zone-0.6.17-noexc.tgz"
+    },
+    "openurl": {
+      "version": "1.1.0",
+      "from": "openurl@1.1.0",
+      "resolved": "https://registry.npmjs.org/openurl/-/openurl-1.1.0.tgz",
+      "dev": true
     },
     "opn": {
       "version": "4.0.2",
