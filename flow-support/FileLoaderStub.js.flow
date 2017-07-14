@@ -1,0 +1,7 @@
+ @flow
+
+/*:: export type FileLoaderResult = string; */
+
+const s: string = "";
+
+export default s;

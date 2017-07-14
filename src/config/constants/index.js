@@ -5,6 +5,6 @@ import STATE from './STATE';
 
 export default {
   API,
-  STATE,
   FORMAT,
+  STATE,
 };

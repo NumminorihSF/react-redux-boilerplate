@@ -10,20 +10,20 @@ const removeExt = function (name) {
 
 export default class {
   constructor() {
-    return function() {
-      this.plugin("done", function (stats) {
-        let json = {};
-        stats.compilation.chunks.forEach(function (chunk) {
+    return function () {
+      this.plugin('done', (stats) => {
+        const json = {};
+        stats.compilation.chunks.forEach((chunk) => {
           chunk.files.forEach((file) => {
             json[chunk.name] = removeExt(file);
             json[chunk.id] = removeExt(file);
             chunk.ids.forEach((id) => {
-              json[id] = removeExt(file)
+              json[id] = removeExt(file);
             });
           });
         });
         fs.writeFile(path.join(process.cwd(), dest, 'dll', 'chunk-map.json'), JSON.stringify(json, null, 2));
       });
-    }
+    };
   }
 }

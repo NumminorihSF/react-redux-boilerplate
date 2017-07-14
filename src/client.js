@@ -1,5 +1,6 @@
 /** @flow */
 import 'opbeat';
+import 'ric';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import browserHistory from 'react-router/lib/browserHistory';
@@ -10,6 +11,10 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import configureStore from './store/configureStore';
 import createRoutes from './routing/index';
 
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
+  window.Perf = require('react-addons-perf');
+}
 
 const store = configureStore(Map());
 
@@ -36,6 +41,7 @@ const render = function (child) {
 };
 
 render(createRoutes(syncHistoryWithStore(browserHistory, store, syncOpts)));
+
 if (typeof module.hot === 'object' && module.hot !== null) {
   if (typeof module.hot.accept === 'function') {
     module.hot.accept([

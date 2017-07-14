@@ -6,6 +6,7 @@ module.exports = function (ctx) {
     to: ctx.to,
     plugins: {
       autoprefixer: {},
+      'postcss-flexbugs-fixes': {},
     },
   };
 };

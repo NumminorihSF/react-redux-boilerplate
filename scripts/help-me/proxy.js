@@ -17,10 +17,37 @@ const log = (string, ...rest) => {
   console.log(`${moment().format(FORMAT)} ${MODULE_NAME} - ${string}`, ...rest);
 };
 
-
-
-module.exports.start = function ({ API_BASE_URL, BASE_PORT, PROXY_PORT }) {
+module.exports.start = function ({ API_BASE_URL, EXTRA_URL, EXTRA_TEMP_API_PREFIXES, BASE_PORT, PROXY_PORT, TEMP_API_PREFIX }) {
   const apiBaseUrl = url.parse(API_BASE_URL);
+  const regexp = new RegExp(String(TEMP_API_PREFIX).replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1'));
+
+  const urls = Object.keys(EXTRA_URL)
+    .reduce((res, key) => Object.assign({}, res, { [key]: url.parse(EXTRA_URL[key]) }), {});
+
+  const getPath = (path = '') => {
+    const prefixKey = Object.keys(EXTRA_TEMP_API_PREFIXES).find(prefix => path.startsWith(EXTRA_TEMP_API_PREFIXES[prefix]));
+    if (prefixKey) return path.replace(EXTRA_TEMP_API_PREFIXES[prefixKey], '');
+    return path.replace(TEMP_API_PREFIX, '');
+  };
+
+  const getHost = (path = '') => {
+    const prefixKey = Object.keys(EXTRA_TEMP_API_PREFIXES).find(prefix => path.startsWith(EXTRA_TEMP_API_PREFIXES[prefix]));
+    if (prefixKey) return urls[prefixKey].host;
+    return apiBaseUrl.host;
+  };
+
+  const getHostname = (path = '') => {
+    const prefixKey = Object.keys(EXTRA_TEMP_API_PREFIXES).find(prefix => path.startsWith(EXTRA_TEMP_API_PREFIXES[prefix]));
+    if (prefixKey) return urls[prefixKey].hostname;
+    return apiBaseUrl.hostname;
+  };
+
+  const getPort = (path = '') => {
+    const prefixKey = Object.keys(EXTRA_TEMP_API_PREFIXES).find(prefix => path.startsWith(EXTRA_TEMP_API_PREFIXES[prefix]));
+    if (prefixKey) return urls[prefixKey].port;
+    return 443;
+  };
+
   const options = {
     type          : "http",
     port          : PROXY_PORT,
@@ -30,27 +57,20 @@ module.exports.start = function ({ API_BASE_URL, BASE_PORT, PROXY_PORT }) {
     },
     rule          : {
       replaceRequestProtocol:function(req,protocol){
-        if (/\/api\//.test(req.url)) {
+        if (regexp.test(req.url)) {
           return apiBaseUrl.protocol;
-        }
-        else {
+        } else {
           return 'http';
         }
       },
 
-      replaceRequestOption : function(req, option){
+      replaceRequestOption : function(req, option) {
         const newOption = Object.assign({}, option);
-        if (/\/api\//.test(req.url)) {
-          newOption.headers.host = apiBaseUrl.host;
-          newOption.host = apiBaseUrl.host;
-          newOption.hostname = apiBaseUrl.hostname;
-          newOption.port = apiBaseUrl.port;
-        }
-        // else {
-        //   newOption.hostname = `127.0.0.1`;
-        //   newOption.host = `127.0.0.1:${BASE_PORT}`;
-        //   newOption.port = PROXY_PORT;
-        // }
+        newOption.headers.host     = getHost(option.path);
+        newOption.host     = getHost(option.path);
+        newOption.hostname = getHostname(option.path);
+        newOption.port     = getPort(option.path);
+        newOption.path     = getPath(option.path);
         return newOption;
       },
     }

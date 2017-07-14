@@ -8,11 +8,18 @@ function getNpm() {
   return npm;
 }
 
+function sleep(timer) {
+  return new Promise(resolve => setTimeout(resolve, timer));
+}
+
+const SLEEP_TIME = Number(process.env.SLEEP_TIME) || 0;
+
 exports.getNpm = getNpm;
 
 exports.getUniqCommandRunner = function getUniqCommandRunner(COMMAND, ARGS, OPTIONS, log = console.log) {
   const waiters = [];
   let promise = Promise.resolve();
+  let firstRun = true;
   return function () {
     let command = COMMAND;
     if (command === 'npm') command = getNpm();
@@ -28,7 +35,14 @@ exports.getUniqCommandRunner = function getUniqCommandRunner(COMMAND, ARGS, OPTI
       if (!waiters.length) return;
       const last = waiters.pop();
       waiters.length = 0;
-      promise = new Promise(last);
+      if (firstRun) {
+        firstRun = false;
+        promise = new Promise(last);
+      } else {
+        promise = sleep(SLEEP_TIME).then(() => new Promise(last));
+      }
     });
   };
 };
+
+exports.sleep = sleep;

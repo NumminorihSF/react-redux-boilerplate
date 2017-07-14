@@ -46,7 +46,9 @@ function mapStateToProps(state, props) {
 
 class SiteMap extends PureComponent {
   render() {
-    const routes = this.props.routes.map(({ name, url }) => <p key={`${name} ${url}`}>{name} - <Link to={url}>go to</Link></p>);
+    const routes = this.props.routes.map(
+      ({ name, url }) => <p key={`${name} ${url}`}>{name} - <Link to={url}>go to</Link></p>,
+    );
     return (
       <div style={{ marginLeft: 12 }}>
         {routes}

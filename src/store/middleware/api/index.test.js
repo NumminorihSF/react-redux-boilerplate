@@ -209,9 +209,9 @@ describe('Middleware::Api', function(){
         let promise = apiMiddleware(store)(next)(action);
         promise.then(()=> {
           expect(store.dispatch).to.have.been
-            .calledWith(sinon.match({ type: successType1, response: camelizeKeys(response1) }));
+            .calledWith(sinon.match({ type: successType1, response: response1 }));
           expect(store.dispatch).to.have.been
-            .calledWith(sinon.match({ type: successType2, response: camelizeKeys(response2)}));
+            .calledWith(sinon.match({ type: successType2, response: response2 }));
           done();
         }).catch(done);
       });
@@ -236,11 +236,11 @@ describe('Middleware::Api', function(){
         }).catch(done);
       });
 
-      it('pass previous response\'s body with camelized keys into next request function', function(done){
+      it('pass previous response\'s body without camelizing any key into next request function', function(done){
         const spy = action[CHAIN_API][1] = sinon.spy();
         let promise = apiMiddleware(store)(next)(action);
         promise.then(()=> {
-          expect(spy).to.be.calledWith(camelizeKeys(response1))
+          expect(spy).to.be.calledWith(response1)
           done();
         }).catch(done);
       });

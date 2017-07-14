@@ -1,0 +1,7 @@
+ @flow
+
+/*:: export type CSSModule = { [key: string]: string }; */
+
+const cssModule/*: CSSModule */ = {};
+
+module.exports = cssModule;

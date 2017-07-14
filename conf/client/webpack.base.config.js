@@ -12,38 +12,43 @@ const { buildDestination: dest } = require('../../package.json');
 
 const chunkMap = require(path.join(process.cwd(), dest, 'dll', 'chunk-map.json'));
 
+const urls = Object.keys(process.env)
+  .filter(key => key.startsWith('EXTRA_URL_'))
+  .reduce((result, key) => Object.assign({}, result, { [key]: JSON.stringify(process.env[key]) }), {});
 
 const define = {
   'process.env.OPBEAT_APP_ID': JSON.stringify(process.env.OPBEAT_APP_ID),
   'process.env.OPBEAT_ORG_ID': JSON.stringify(process.env.OPBEAT_ORG_ID),
+  'process.env.BING_API_KEY': JSON.stringify(process.env.BING_API_KEY),
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  'process.env': {
+  'process.env': Object.assign({
     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
     API_BASE_URL: JSON.stringify(process.env.API_BASE_URL || null),
     ON_SERVER: 'false',
     RUN_TYPE: JSON.stringify('client'),
+    BING_API_KEY: JSON.stringify(process.env.BING_API_KEY),
     OPBEAT_ORG_ID: JSON.stringify(process.env.OPBEAT_ORG_ID),
     OPBEAT_APP_ID: JSON.stringify(process.env.OPBEAT_APP_ID),
-  },
+  }, urls),
   OPBEAT_ORG_ID: JSON.stringify(process.env.OPBEAT_ORG_ID),
   OPBEAT_APP_ID: JSON.stringify(process.env.OPBEAT_APP_ID),
-  'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  'ON_SERVER': 'false',
-  'RUN_TYPE': JSON.stringify('client'),
-  'GLOBAL': 'window',
-  'global': 'window'
+  NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+  ON_SERVER: 'false',
+  RUN_TYPE: JSON.stringify('client'),
+  GLOBAL: 'window',
+  global: 'window',
 };
 
 
-const dllPlugins = Object.keys(dllConfig.entry).map(entry => {
+const dllPlugins = Object.keys(dllConfig.entry).map((entry) => {
   const entryName = chunkMap[entry];
   return new webpack.DllReferencePlugin({
     context: '.',
-    manifest: require(path.join(process.cwd(), dest, 'dll', `${entryName}.manifest.json`))
+    manifest: require(path.join(process.cwd(), dest, 'dll', `${entryName}.manifest.json`)),
   });
 });
 
-const dllAssetsPlugins = Object.keys(dllConfig.entry).map(entry => {
+const dllAssetsPlugins = Object.keys(dllConfig.entry).map((entry) => {
   const entryName = chunkMap[entry];
   return new AddAssetHtmlPlugin({
     filepath: require.resolve(path.join(process.cwd(), dest, 'dll', `${entryName}.js`)),
@@ -53,34 +58,34 @@ const dllAssetsPlugins = Object.keys(dllConfig.entry).map(entry => {
 export default new Config().merge({
   devtool: 'source-map',
   resolve: {
-    modules: [path.resolve(process.cwd(), "src"), "node_modules"]
+    modules: [path.resolve(process.cwd(), 'src'), 'node_modules'],
   },
   entry: {
-    app :[
+    app: [
       'babel-polyfill',
-      './src/client.js'
-    ]
+      './src/client.js',
+    ],
   },
 
   output: {
     filename: 'app.js',
     path: path.join(process.cwd(), dest, 'public'),
     publicPath: '/public/',
-    chunkFilename: "[name].js"
+    chunkFilename: '[name].js',
   },
 
   plugins: [
     ...dllPlugins,
     new webpack.LoaderOptionsPlugin({
-      debug: true
+      debug: true,
     }),
     new webpack.DefinePlugin(define),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
     }),
-    ...dllAssetsPlugins
+    ...dllAssetsPlugins,
   ],
   module: {
     rules: [
@@ -88,15 +93,41 @@ export default new Config().merge({
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: [
-          'babel-loader'
-        ]
+          'babel-loader',
+        ],
       },
-      { test: /\.woff(\?.*)?$/,  loader: "file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff" },
-      { test: /\.woff2(\?.*)?$/, loader: "file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff2" },
-      { test: /\.ttf(\?.*)?$/,   loader: "file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream" },
-      { test: /\.eot(\?.*)?$/,   loader: "file-loader?prefix=assets/fonts/&name=/fonts/[name].[ext]" },
-      { test: /\.svg(\?.*)?$/,   loader: "file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=image/svg+xml" },
-      { test: /\.png(\?.*)?$/,   loader: "file-loader?prefix=img/&name=img/[name].[ext]&limit=10000&mimetype=image/png" }
-    ]
-  }
+      {
+        test: /\.woff(\?.*)?$/,
+        loader: 'file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+      },
+      {
+        test: /\.woff2(\?.*)?$/,
+        loader: 'file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff2',
+      },
+      {
+        test: /\.ttf(\?.*)?$/,
+        loader: 'file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+      },
+      {
+        test: /\.eot(\?.*)?$/,
+        loader: 'file-loader?prefix=assets/fonts/&name=/fonts/[name].[ext]',
+      },
+      {
+        test: /\.svg(\?.*)?$/,
+        loader: 'file-loader?prefix=assets/fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=image/svg+xml',
+      },
+      {
+        test: /\.png(\?.*)?$/,
+        loader: 'file-loader?prefix=img/&name=img/[name].[ext]&limit=10000&mimetype=image/png',
+      },
+      {
+        test: /\.jpe?g(\?.*)?$/,
+        loader: 'file-loader?prefix=img/&name=img/[name].[ext]&limit=10000&mimetype=image/jpeg',
+      },
+      {
+        test: /\.gif(\?.*)?$/,
+        loader: 'file-loader?prefix=img/&name=img/[name].[ext]&limit=10000&mimetype=image/gif',
+      },
+    ],
+  },
 });

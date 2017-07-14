@@ -15,11 +15,11 @@ const define = {
     OPBEAT_APP_ID: JSON.stringify(process.env.OPBEAT_APP_ID),
   },
   'process.env.OPBEAT_APP_ID': JSON.stringify(process.env.OPBEAT_APP_ID),
-  'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  'ON_SERVER': 'false',
-  'RUN_TYPE': JSON.stringify('client'),
-  'GLOBAL': 'window',
-  'global': 'window'
+  NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+  ON_SERVER: 'false',
+  RUN_TYPE: JSON.stringify('client'),
+  GLOBAL: 'window',
+  global: 'window',
 };
 
 
@@ -29,6 +29,7 @@ export default new Config().merge({
     react: [
       'react',
       'react-dom',
+      'react-immutable-proptypes',
       'classnames',
     ],
     router: [
@@ -37,8 +38,6 @@ export default new Config().merge({
       'react-router-redux',
     ],
     components: [
-      'react-select',
-      'react-bootstrap-table',
       'react-portal',
     ],
     redux: [
@@ -52,7 +51,7 @@ export default new Config().merge({
       'immutable',
       'bluebird',
       'superagent',
-      'underscore',
+      'lodash-es',
       'moment',
       'humps',
       'reselect',
@@ -62,25 +61,25 @@ export default new Config().merge({
   output: {
     filename: '[name].js',
     path: path.join(process.cwd(), dest, 'dll'),
-    chunkFilename: "[name]-[hash].js",
-    library: '[name]_lib'
+    chunkFilename: '[name]-[hash].js',
+    library: '[name]_lib',
   },
 
   plugins: [
     new webpack.LoaderOptionsPlugin({
-      debug: true
+      debug: true,
     }),
     new webpack.DefinePlugin(define),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ChunkMapPlugin()
+    new ChunkMapPlugin(),
   ],
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel'
-      }
-    ]
-  }
+        loader: 'babel',
+      },
+    ],
+  },
 });

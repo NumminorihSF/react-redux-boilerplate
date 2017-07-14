@@ -20,21 +20,21 @@ const log = (string, ...rest) => {
   console.log(`${moment().format(FORMAT)} ${MODULE_NAME} - ${string}`, ...rest);
 };
 
-module.exports.start = function( { MOCK_PORT }){
+module.exports.start = function({ MOCK_PORT }) {
   log(`spawn "${COMMAND} ${ARGS}"`);
 
   const OPTIONS = {
     stdio: ['pipe', process.stdout, process.stderr],
     env: Object.assign({}, process.env, {
-      API_BASE_URL: `http://127.0.0.1:${MOCK_PORT}/`
-    })
+      API_BASE_URL: `http://127.0.0.1:${MOCK_PORT}/`,
+    }),
   };
 
   const devServer = cp.spawn(COMMAND, ARGS, OPTIONS);
 
   devServer.on('close', (code) => {
     console.log(`dev:server process exited with code ${code}`);
-    setImmediate(()=> process.exit(code));
+    setImmediate(() => process.exit(code));
   });
 
   process.on('beforeExit', () => {

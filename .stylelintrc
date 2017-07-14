@@ -1,3 +1,15 @@
 {
-  "extends": "stylelint-config-standard"
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "selector-pseudo-element-colon-notation": "single",
+    "selector-pseudo-class-no-unknown": [ true, {
+      "ignorePseudoClasses": ["global"]
+    }],
+    "unit-blacklist": ["em", "rem"],
+    "sh-waqar/declaration-use-variable": false
+  },
+  "plugins": [
+    "stylelint-no-unsupported-browser-features",
+    "stylelint-declaration-use-variable"
+  ]
 }

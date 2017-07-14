@@ -4,17 +4,27 @@ import type { Store, Middleware } from 'redux';
 
 import superAgent from 'superagent';
 import Promise from 'bluebird';
-import { camelizeKeys, decamelizeKeys } from 'humps';
 import config from 'config';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 
 import { getCookieHeader, getCookieSetter, setCookie, setCookieHeader, isFunction } from './utils';
 
 import createQueue, { AbortingError } from './queue';
+import save from './save';
 
 const { constants }: { constants: any } = config;
 const { API } = constants;
-const { BASE_URL } = API;
+const { BASE_URL, EXTRA_URL } = API;
 const requestsQueue = createQueue();
+
+const CASE_TRANSFORM = 'caseTransform';
+const DEFAULT_KEY = 'DEFAULT';
+const BASES = {
+  ...EXTRA_URL,
+  [DEFAULT_KEY]: BASE_URL,
+};
+
+export const BASE = Object.keys(BASES).reduce((res, key) => ({ ...res, [key]: key }), {});
 
 /** @typedef {Object} CallApi */
 /** @typedef {Object} MiddlewareApi.ChainApi */
@@ -113,44 +123,74 @@ const a: any = ApiError;
 a.prototype = Object.create(Error.prototype);
 
 
-export default ({ dispatch, getState }: Store<mixed, Object>) => (next: Middleware<mixed, Object>) => (action: Object) => {
-  if (action[CALL_API]) {
-    action[CALL_API][IS_CALL_API_ORIGINAL] = true; // eslint-disable-line no-param-reassign
-    const nextAction: any = {};
-    nextAction[CHAIN_API] = [
-      () => action,
-    ];
-    return dispatch(nextAction);
+function extractParams(callApi) {
+  const {
+    method,
+    cookie,
+    path,
+    query,
+    body,
+    startType,
+    beforeStart,
+    successType,
+    errorType,
+    afterSuccess,
+    afterError,
+    maxCount,
+    dislodging = false,
+    base = DEFAULT_KEY,
+    ...changeableParams
+  } = callApi;
+  let {
+    // eslint-disable-next-line no-use-before-define
+    unifier = defaultUnifier(callApi),
+  } = changeableParams;
+
+  const url = `${BASES[base]}${path}`;
+  const cookieHeader = getCookieHeader(cookie);
+  const setCookie = getCookieSetter(url, cookie);
+
+  if (unifier instanceof Function) unifier = unifier(callApi);
+
+  return {
+    ...changeableParams,
+    method: method.toLowerCase(),
+    url,
+    cookieHeader,
+    setCookie,
+    query,
+    body,
+    startType,
+    beforeStart,
+    successType,
+    errorType,
+    afterSuccess,
+    afterError,
+    unifier,
+    maxCount,
+    dislodging,
+  };
+}
+
+function getRequestObject({ params }) {
+  const { headers = {}, download = false, [CASE_TRANSFORM]: caseTransform = false } = params;
+  const tempReq:any = Object.keys(headers).reduce(
+    (innerReq: any, header) => innerReq.set(header, headers[header]),
+    setCookieHeader(superAgent[params.method](params.url), params),
+  );
+  let req = tempReq;
+  if (download) {
+    req = tempReq.responseType('blob');
   }
-
-  let resolve;
-  const deferred = new Promise((res) => {
-    [resolve] = [res];
-  });
-
-  if (!action[CHAIN_API]) {
-    return next(action);
+  // If body is formdata, don't decamlize
+  if (Object.prototype.toString.call(params.body) === '[object FormData]') {
+    return req.send(params.body);
   }
-
-  // eslint-disable-next-line no-use-before-define
-  const promiseCreators = action[CHAIN_API].map(apiActionCreator => createRequestPromise(apiActionCreator, next, getState, dispatch));
-
-  const overall = promiseCreators.reduce((promise, creator) => promise.then(body => creator(body)), Promise.resolve());
-
-  overall.finally(() => {
-    resolve();
-  }).catch((error) => {
-    if (error instanceof ApiError) return;
-    if (error instanceof AbortingError) return;
-    middlewareErrorTypes.map(type => dispatch(actionWith(action, { // eslint-disable-line no-use-before-define
-      error,
-      type,
-    })));
-  });
-
-  return deferred;
-};
-
+  if (caseTransform) {
+    return req.send(decamelizeKeys(params.body));
+  }
+  return req.send(params.body);
+}
 
 function actionWith(action, toMerge) {
   const ret = Object.assign({}, action, toMerge);
@@ -171,15 +211,6 @@ function performPreStart({ dispatch, params, apiAction, getState }) {
   if (isFunction(params.beforeStart)) {
     params.beforeStart({ dispatch, getState });
   }
-}
-
-function getRequestObject({ params }) {
-  const req:any = setCookieHeader(superAgent[params.method](params.url), params);
-  // If body is formdata, don't decamlize
-  if (Object.prototype.toString.call(params.body) === '[object FormData]') {
-    return req.send(params.body);
-  }
-  return req.send(decamelizeKeys(params.body));
 }
 
 function performError({ dispatch, err, params, apiAction, getState, resBody, reject, response }) {
@@ -231,91 +262,108 @@ function performSuccess({ dispatch, params, apiAction, getState, resBody, resolv
 function createRequestPromise(apiActionCreator, next, getState, dispatch) {
   return (prevBody) => {
     const apiAction = apiActionCreator(prevBody);
+    if (apiAction[CHAIN_API]) {
+      const promiseCreators = apiAction[CHAIN_API].map(
+        apiActionCreator => createRequestPromise(apiActionCreator, next, getState, dispatch),
+      );
+      return promiseCreators.reduce(
+        (promise, creator) => promise.then(body => creator(body)),
+        Promise.resolve(prevBody),
+      );
+    }
     let resolveRequest;
     let rejectRequest;
     const deferred = new Promise((res, rej) => {
       [resolveRequest, rejectRequest] = [res, rej];
     });
-    // eslint-disable-next-line no-use-before-define
     const params = extractParams(apiAction[CALL_API]);
 
     requestsQueue.push(params.unifier, params.maxCount, (error) => {
       if (error) return rejectRequest(error);
-      return new Promise((resolve, reject) => {
+      let request;
+      const prom = new Promise((resolve, reject) => {
         const baseOptions = { dispatch, params, apiAction, getState };
         performPreStart({ ...baseOptions });
 
-        getRequestObject({ params })
+        request = getRequestObject({ params })
           .withCredentials()
           .query(params.query)
           .end((err, response) => {
             const baseAfterResp = { ...baseOptions, response };
+            if (params.download) save(response);
 
             let resBody;
             if (response && response.body) {
-              resBody = camelizeKeys(response.body);
+              resBody = params[CASE_TRANSFORM] ? camelizeKeys(response.body) : response.body;
             }
 
             if (err) {
               const error = err instanceof Error ? err : new Error(err);
               return performError({ ...baseAfterResp, err: error, resBody, reject });
             }
+
             return performSuccess({ ...baseAfterResp, resBody, resolve });
           });
       })
         .then(resolveRequest)
         .catch(rejectRequest);
-    });
+
+      return {
+        abort: () => request.abort(),
+        then: cb => prom.then(cb),
+        catch: cb => prom.catch(cb),
+      };
+    }, params.dislodging);
 
     return deferred;
   };
 }
 
-function extractParams(callApi) {
-  const {
-    method,
-    cookie,
-    path,
-    query,
-    body,
-    startType,
-    beforeStart,
-    successType,
-    errorType,
-    afterSuccess,
-    afterError,
-    maxCount,
-    ...changeableParams
-  } = callApi;
-  let {
-    // eslint-disable-next-line no-use-before-define
-    unifier = defaultUnifier(callApi),
-  } = changeableParams;
+export default ({ dispatch, getState }: Store<mixed, Object>) =>
+  (next: Middleware<mixed, Object>) =>
+    (action: Object) => {
+      if (!action) return next(action);
+      if (action[CALL_API]) {
+        action[CALL_API][IS_CALL_API_ORIGINAL] = true; // eslint-disable-line no-param-reassign
+        const nextAction: any = {};
+        nextAction[CHAIN_API] = [
+          () => action,
+        ];
+        return dispatch(nextAction);
+      }
 
-  const url = `${BASE_URL}${path}`;
-  const cookieHeader = getCookieHeader(cookie);
-  const setCookie = getCookieSetter(url, cookie);
+      if (!action[CHAIN_API]) {
+        return next(action);
+      }
 
-  if (unifier instanceof Function) unifier = unifier(callApi);
+      let resolve;
+      const deferred = new Promise((res) => {
+        [resolve] = [res];
+      });
 
-  return {
-    ...changeableParams,
-    method: method.toLowerCase(),
-    url,
-    cookieHeader,
-    setCookie,
-    query,
-    body,
-    startType,
-    beforeStart,
-    successType,
-    errorType,
-    afterSuccess,
-    afterError,
-    unifier,
-    maxCount,
-  };
-}
+      const promiseCreators = action[CHAIN_API].map(
+        apiActionCreator => createRequestPromise(apiActionCreator, next, getState, dispatch),
+      );
+
+      const overall = promiseCreators.reduce(
+        (promise, creator) => promise.then(body => creator(body)),
+        Promise.resolve(),
+      );
+
+      overall.finally(() => {
+        resolve();
+      }).catch((error) => {
+        if (error instanceof ApiError) return;
+        if (error instanceof AbortingError) return;
+        middlewareErrorTypes.map(type => dispatch(actionWith(action, {
+          error,
+          type,
+        })));
+      });
+
+      return deferred;
+    };
+
 
 export function addGlobalErrorType(type: string | Symbol) {
   if (globalErrorTypes.indexOf(type) === -1) {
@@ -334,7 +382,6 @@ export function addMiddlewareErrorType(type: string | Symbol) {
   }
 }
 
-
 const defaultUnifier: Function = (function () {
   let increment = 1;
   const defaultPrefix = '__default__';
@@ -346,4 +393,3 @@ const defaultUnifier: Function = (function () {
     return `${params.method} ${params.path} ${JSON.stringify(params.query)}`;
   };
 }());
-

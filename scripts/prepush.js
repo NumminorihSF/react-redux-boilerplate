@@ -1,4 +1,5 @@
 const cp = require('child_process');
+const path = require('path');
 
 const moment = require('moment');
 const { getNpm } = require('./utils');
@@ -18,6 +19,33 @@ const checkBranch = () => {
   if (process.env.SKIP_PREPUSH) return process.exit(0);
   return Promise.resolve();
 };
+
+const buildDll = () => {
+  const COMMAND = getNpm();
+  const ARGS = ['run', 'build:target:dll'];
+  return new Promise((resolve) => {
+    log(`start "${COMMAND} ${ARGS.join(' ')}"`);
+    cp.spawn(COMMAND, ARGS, OPTIONS)
+      .once('exit', (code) => {
+        log('end');
+        if (code !== 0) {
+          process.exit(code);
+        } else {
+          resolve();
+        }
+      });
+  });
+};
+
+const buildDllIfNeed = () => new Promise((resolve) => {
+  require(path.join(__dirname, '../build/dll/chunk-map.json'));
+  resolve();
+}).catch(err => {
+  console.warn(err);
+  log('Try build dll');
+  return buildDll();
+});
+
 
 const beforeTypeCheck = () => {
   const COMMAND = getNpm();
@@ -70,6 +98,23 @@ const lint = () => {
   });
 };
 
+const stylelint = () => {
+  const COMMAND = getNpm();
+  const ARGS = ['run', 'stylelint'];
+  return new Promise((resolve) => {
+    log(`start "${COMMAND} ${ARGS.join(' ')}"`);
+    cp.spawn(COMMAND, ARGS, OPTIONS)
+      .once('exit', (code) => {
+        log('end');
+        if (code !== 0) {
+          process.exit(code);
+        } else {
+          resolve();
+        }
+      });
+  });
+};
+
 const test = () => {
   const COMMAND = getNpm();
   const ARGS = ['run', 'test'];
@@ -88,5 +133,7 @@ const test = () => {
 };
 
 checkBranch()
+  .then(buildDllIfNeed)
   .then(lint)
+  .then(stylelint)
   .then(test);

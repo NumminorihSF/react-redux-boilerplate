@@ -1,0 +1,28 @@
+{
+    "check-coverage": false,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "build/**/*",
+      "conf/**/*",
+      "reports/**/*",
+      "scripts/**/*",
+      "flow-typed/**/*",
+      "*.js",
+      "src/**/*.spec.js",
+      "src/**/*.test.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "require": [
+      "babel-core/register"
+    ],
+    "extension": [
+      ".jsx",
+      ".js"
+    ],
+    "all": true
+  }

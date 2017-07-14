@@ -103,3 +103,5 @@ build
 flow-typed
 
 !docker/**
+*.directory
+.stylelintcache

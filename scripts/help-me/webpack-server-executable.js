@@ -9,18 +9,36 @@ const configModule = require(path.join(process.cwd(), 'conf', 'webpack.config.ba
 const config = configModule.default || configModule;
 const port = process.env.PORT || 3000;
 
-new WebpackDevServer(webpack(config), {
-  proxy: {
-    '/api': {
-      target: `http://127.0.0.1:${process.env.PROXY_PORT || 3001}`,
-    },
+const TEMP_API_PREFIX = process.env.TEMP_API_PREFIX || '';
+const prefixes = Object.keys(process.env)
+  .filter(key => key.startsWith('EXTRA_TEMP_API_PREFIXES_'))
+  .reduce((res, key) =>
+    Object.assign({}, res, { [key.replace('EXTRA_TEMP_API_PREFIXES_', '')]: process.env[key] }), {});
+
+const getProxyOptions = () => ({
+  target: `http://127.0.0.1:${process.env.PROXY_PORT || 3001}`,
+  secure: false,
+  onProxyRes: function onProxyRes(proxyRes, req) {
+    delete proxyRes.headers['Access-Control-Allow-Origin'];
+    proxyRes.headers['Access-Control-Allow-Origin'] = `${req.protocol}://${req.hostname}`;
   },
+});
+
+const proxies = Object.keys(prefixes).reduce((proxs, prefix) => {
+  const result = {
+    [prefixes[prefix]]: getProxyOptions(),
+  };
+  return Object.assign({}, proxs, result);
+}, { [TEMP_API_PREFIX]: getProxyOptions() });
+
+new WebpackDevServer(webpack(config), {
+  proxy: proxies,
   publicPath: config.output.publicPath,
+  public: String(process.env.PUBLIC_PATH).replace(/^https?:\/\//, ''),
   hot: true,
   historyApiFallback: true,
   disableHostCheck: true,
   compress: true,
-  headers: { 'Access-Control-Allow-Origin': '*' },
   inline: true,
   lazy: false,
   contentBase: path.join(process.cwd(), 'src'),

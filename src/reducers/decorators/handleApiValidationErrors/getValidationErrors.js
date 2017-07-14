@@ -1,5 +1,9 @@
 /** @flow */
-import type { ValidationError } from 'types';
+export type ValidationError = {
+  field: string;
+  errors: Array<string>;
+};
+
 
 type ValidationErrors = Array<ValidationError>;
 

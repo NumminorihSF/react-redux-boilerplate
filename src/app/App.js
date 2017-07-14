@@ -2,13 +2,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
-import AppLayout from './AppLayout';
+import Layout from './Layout';
 
 class App extends PureComponent {
   render() {
     return (
       <div>
-        <AppLayout {...this.props} />
+        <Layout {...this.props} />
       </div>
     );
   }

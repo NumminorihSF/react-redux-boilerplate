@@ -30,7 +30,7 @@ env:
 rules:
   no-plusplus: 0
   no-console: 0
-  max-len: 0
+  max-len: [2, 120]
   no-shadow: 0
   func-names: 0
   linebreak-style: [0]
@@ -45,7 +45,7 @@ rules:
   react/prop-types: 0
   react/jsx-filename-extension: 0
   react/require-default-props: 0
-  react/prefer-stateless-function: 0
+  react/prefer-stateless-function: 2
   react/no-unused-prop-types: 1
 
   eslint-comments/disable-enable-pair: "error"
@@ -53,3 +53,6 @@ rules:
   eslint-comments/no-unlimited-disable: "error"
   eslint-comments/no-unused-disable: "warn"
   eslint-comments/no-unused-enable: "warn"
+
+globals:
+  Microsoft: false

@@ -32,10 +32,11 @@ export default function handleApiValidationErrors(types: ActionTypes, originalRe
     if (!errorTypes.includes(action.type)) return originalReducer(state, action);
     if (!action.response) return originalReducer(state, action);
     if (action.response.code !== CODE.VALIDATION_ERROR) return originalReducer(state, action);
-    const nextState = state
-      .set(VALIDATION.ERRORS_FIELD, getValidationErrors(action.response[FIELD.VALIDATION_ERRORS]))
-      .set(VALIDATION.DETAIL_FIELD, getValidationDetails(action.response[FIELD.VALIDATION_DETAILS]))
-      .set(VALIDATION.IS_VALID_FIELD, false);
+    const nextState = state.merge({
+      [VALIDATION.ERRORS_FIELD]: getValidationErrors(action.response[FIELD.VALIDATION_ERRORS]),
+      [VALIDATION.DETAIL_FIELD]: getValidationDetails(action.response[FIELD.VALIDATION_DETAILS]),
+      [VALIDATION.IS_VALID_FIELD]: false,
+    });
 
     return originalReducer(nextState, action);
   };

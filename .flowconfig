@@ -2,16 +2,24 @@
 .*/npm/.*
 .*/build/.*
 .*/dest/.*
+.*/stylelint/.*
 
 [include]
 
 [libs]
 
 [options]
-module.name_mapper.extension='css' -> '<PROJECT_ROOT>/src/types/CSSFlowStub.js.flow'
-module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/src/types/CSSFlowStub.js.flow'
+module.name_mapper.extension='css' -> '<PROJECT_ROOT>/flow-support/CSSFlowStub.js.flow'
+module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow-support/CSSFlowStub.js.flow'
+
+module.name_mapper.extension='svg' -> '<PROJECT_ROOT>/flow-support/FileLoaderStub.js.flow'
+module.name_mapper.extension='png' -> '<PROJECT_ROOT>/flow-support/FileLoaderStub.js.flow'
+module.name_mapper.extension='jpg' -> '<PROJECT_ROOT>/flow-support/FileLoaderStub.js.flow'
+module.name_mapper.extension='gif' -> '<PROJECT_ROOT>/flow-support/FileLoaderStub.js.flow'
+
 module.system.node.resolve_dirname=src
 module.system.node.resolve_dirname=node_modules
+
 module.file_ext=.js
 module.file_ext=.json
 module.file_ext=.jsx

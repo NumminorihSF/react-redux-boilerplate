@@ -19,16 +19,29 @@ const logErr = (string, ...rest) => {
   console.error(`${moment().format(FORMAT)} ${MODULE_NAME} - ${string}`, ...rest);
 };
 
-module.exports.start = function ({ API_BASE_URL, BASE_PORT, PROXY_PORT }) {
+module.exports.start = function ({ API_BASE_URL, BASE_PORT, EXTRA_URL, EXTRA_TEMP_API_PREFIXES, PROXY_PORT, TEMP_API_PREFIX }) {
   log(`spawn "${COMMAND} ${ARGS}"`);
+
   const OPTIONS = {
     stdio: ['pipe', process.stdout, process.stderr],
-    env: Object.assign({}, process.env, {
-      PORT: BASE_PORT,
-      PROXY_PORT,
-      API_BASE_URL,
-      PUBLIC_PATH: API_BASE_URL,
-    }),
+    env: (function(env) {
+      if (process.env.TCOMB) return {
+        ...env,
+        BABEL_ENV: 'tcomb',
+      };
+      return env;
+    }(Object.assign(
+      {},
+      process.env,
+      Object.keys(EXTRA_URL).reduce((res, key) => ({ ...res, [`EXTRA_URL_${key}`]: `${EXTRA_URL[key]}${EXTRA_TEMP_API_PREFIXES[key]}` }), {}),
+      Object.keys(EXTRA_TEMP_API_PREFIXES).reduce((res, key) => ({ ...res, [`EXTRA_TEMP_API_PREFIXES_${key}`]: EXTRA_TEMP_API_PREFIXES[key] }), {}),
+      {
+        PORT: BASE_PORT,
+        PUBLIC_PATH: API_BASE_URL,
+        PROXY_PORT,
+        TEMP_API_PREFIX,
+        API_BASE_URL: `http://127.0.0.1:${BASE_PORT}${TEMP_API_PREFIX}`,
+      }))),
   };
 
   const webpack = cp.spawn(COMMAND, ARGS, OPTIONS);
